@@ -67,8 +67,8 @@ importers:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.49)
       chrome-types:
-        specifier: ^0.1.321
-        version: 0.1.321
+        specifier: ^0.1.322
+        version: 0.1.322
       concurrently:
         specifier: ^9.1.0
         version: 9.1.0
@@ -1494,8 +1494,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chrome-types@0.1.321:
-    resolution: {integrity: sha512-WvjaWVQGJf2CyDyswjMLi+JvcmN4RCZglk+3JrTSozxH9RNLgvMVuHbZ75obT4c9qezvIgsViG5iNNB3fWN5+Q==}
+  chrome-types@0.1.322:
+    resolution: {integrity: sha512-Y94MSOJDSfbMUKK8g9tIf1yKyL814cBAOu/s9DRuq9lq9QsfoXZ3TebCblk1PCDOwDmHdw5H0/JzoD9aSJF6TA==}
 
   ci-info@4.0.0:
     resolution: {integrity: sha512-TdHqgGf9odd8SXNuxtUBVx8Nv+qZOejE6qyqiy5NtbYYQOeFa6zmHkxlPzmaLxWWHsU6nJmB7AETdVPi+2NBUg==}
@@ -5715,7 +5715,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chrome-types@0.1.321: {}
+  chrome-types@0.1.322: {}
 
   ci-info@4.0.0: {}
 
