@@ -16,9 +16,22 @@ chrome.runtime.onInstalled.addListener(async (opt) => {
   }
 })
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'getAllTabsData') {
+    chrome.tabs.query({}, (tabs) => {
+      console.log(tabs);
+    });
+    chrome.tabs.query({ currentWindow: true }, (tabs) => {
+      console.log(tabs);
+    });
+    // 如果你不想返回任何值，可以返回 undefined
+    return undefined;
+  }
+});
+
 console.log('hello world from background')
 
-self.onerror = function (message, source, lineno, colno, error) {
+globalThis.onerror = function (message, source, lineno, colno, error) {
   console.info(
     `Error: ${message}\nSource: ${source}\nLine: ${lineno}\nColumn: ${colno}\nError object: ${error}`
   )

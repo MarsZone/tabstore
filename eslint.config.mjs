@@ -37,10 +37,12 @@ export default antfu(
   {
     rules: {
       'no-alert': 'warn',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-restricted-globals': 'warn',
       'perfectionist/sort-imports': 'off',
+      "no-unused-vars":"off",
       'import/order': 'warn',
+      "unused-imports/no-unused-vars":"off",
       '@typescript-eslint/ban-ts-comment': 'warn',
       "vue/multi-word-component-names":"off",
       '@typescript-eslint/explicit-function-return-type': 'off',

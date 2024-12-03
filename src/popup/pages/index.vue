@@ -5,6 +5,11 @@ const store = useAppStore()
 
 const name = computed(() => store.name)
 const count = computed(() => store.count)
+
+function getAllTabsData(){
+  chrome.runtime.sendMessage({ type: 'getAllTabsData' });
+}
+
 </script>
 
 <template>
@@ -19,9 +24,9 @@ const count = computed(() => store.count)
     <div class="flex gap-x-2 justify-center">
       <button
         class="btn btn-primary"
-        @click="store.increment"
+        @click="getAllTabsData"
       >
-        Increment
+        GetAllTabs
       </button>
       <button
         class="btn btn-primary"
