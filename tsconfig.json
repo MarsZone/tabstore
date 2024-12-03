@@ -20,10 +20,12 @@
       "chrome-types"
     ],
     "strict": true,
+    "noUnusedLocals": false, /* 检查未使用的变量 */
+    "noUnusedParameters": false,/* 检查未使用的函数参数 */
     "noEmit": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "include": [
     "package.json",

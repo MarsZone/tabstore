@@ -5,3 +5,13 @@
 整个json存起来。
 通过https://developer.chrome.com/docs/extensions/reference/api/storage?hl=zh-cn#description 共享存储
 storage
+
+tab数据进行同步
+
+--
+增加一个category,topic
+目录，然后主题
+比如说
+
+category-项目开发
+     topic-ChromeExtensions开发_年月日时分秒

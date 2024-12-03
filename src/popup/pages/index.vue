@@ -10,6 +10,10 @@ function getAllTabsData(){
   chrome.runtime.sendMessage({ type: 'getAllTabsData' });
 }
 
+function getStoreData(){
+  chrome.runtime.sendMessage({ type: 'getStoreData' });
+}
+
 </script>
 
 <template>
@@ -30,9 +34,9 @@ function getAllTabsData(){
       </button>
       <button
         class="btn btn-primary"
-        @click="store.decrement"
+        @click="getStoreData"
       >
-        Decrement
+        getStoreData
       </button>
     </div>
 
