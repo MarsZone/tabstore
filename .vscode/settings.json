@@ -7,5 +7,6 @@
   ],
   "typescript.preferences.autoImportFileExcludePatterns": ["vue-router"],
   "markdown.validate.ignoredLinks": ["./src/setup/pages/index.ts"],
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "marscode.chatLanguage": "cn"
 }
