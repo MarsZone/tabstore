@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useToast } from "primevue/usetoast";
 import { useAppStore } from '@/stores/app.store'
+
+const toast = useToast();
 
 const store = useAppStore()
 
@@ -14,6 +17,11 @@ function getStoreData(){
   chrome.runtime.sendMessage({ type: 'getStoreData' });
 }
 
+function show() {
+  console.log('show')
+  toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content',life: 3000 });
+};
+
 </script>
 
 <template>
@@ -24,6 +32,9 @@ function getStoreData(){
 
     <p>Name: {{ name }}</p>
     <p>Count: {{ count }}</p>
+
+    <Toast />
+    <Button label="Success" severity="success" @click="show" />
 
     <div class="flex gap-x-2 justify-center">
       <button

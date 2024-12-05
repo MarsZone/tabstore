@@ -1,10 +1,12 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router/auto'
+import PrimeVue from 'primevue/config';
 import App from './app.vue'
 import routes from '~pages'
 import '../assets/base.scss'
 import './index.scss'
+
 
 routes.push({
   path: '/',
@@ -16,7 +18,7 @@ const router = createRouter({
   routes,
 })
 
-createApp(App).use(router).use(createPinia()).mount('#app')
+createApp(App).use(PrimeVue).use(router).use(createPinia()).mount('#app')
 
 // console.log(router.getRoutes())
 

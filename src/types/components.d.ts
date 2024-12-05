@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Button: typeof import('primevue/button')['default']
     Changelog: typeof import('./../components/Changelog.vue')['default']
     IFaSolidDiceFive: typeof import('~icons/fa-solid/dice-five')['default']
     'IHeroiconsOutline:menuAlt2': typeof import('~icons/heroicons-outline/menu-alt2')['default']
@@ -14,6 +15,7 @@ declare module 'vue' {
     Install: typeof import('./../components/install.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Toast: typeof import('primevue/toast')['default']
     Update: typeof import('./../components/update.vue')['default']
   }
 }

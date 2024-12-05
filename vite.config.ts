@@ -1,5 +1,6 @@
 import { dirname, relative } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
+import {PrimeVueResolver} from '@primevue/auto-import-resolver';
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import IconsResolver from 'unplugin-icons/resolver'
@@ -87,6 +88,8 @@ export default defineConfig({
       resolvers: [
         // auto import icons
         IconsResolver(),
+        // auto import PrimeVue components
+        PrimeVueResolver()
       ],
     }),
 
