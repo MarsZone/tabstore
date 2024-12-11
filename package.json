@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.2.4",
-    "marked": "^15.0.2",
+    "marked": "^15.0.3",
     "pinia": "^2.2.6",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
