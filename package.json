@@ -1,6 +1,6 @@
 {
   "name": "tabstore",
-  "displayName": "Vite Vue 3 Chrome Extension",
+  "displayName": "tabstore",
   "type": "module",
   "version": "0.0.1",
   "private": true,
@@ -26,6 +26,7 @@
     "@primevue/themes": "^4.2.4",
     "marked": "^15.0.2",
     "pinia": "^2.2.6",
+    "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5",

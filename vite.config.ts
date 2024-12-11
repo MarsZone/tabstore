@@ -23,6 +23,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@tabstore': fileURLToPath(new URL('src/tabstore', import.meta.url)),
       '~': fileURLToPath(new URL('./src', import.meta.url)),
       src: fileURLToPath(new URL('./src', import.meta.url)),
       '@assets': fileURLToPath(new URL('src/assets', import.meta.url)),
@@ -43,6 +44,10 @@ export default defineConfig({
         {
           dir: 'src/pages',
           baseRoute: 'common',
+        },
+        {
+          dir:'src/tabstore/',
+          baseRoute: 'tabstore',
         },
         {
           dir: 'src/setup/pages',

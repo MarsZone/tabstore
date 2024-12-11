@@ -17,6 +17,9 @@ importers:
       pinia:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.7.2)(vue@3.5.13(typescript@5.7.2))
+      primeicons:
+        specifier: ^7.0.0
+        version: 7.0.0
       primevue:
         specifier: ^4.2.4
         version: 4.2.4(vue@3.5.13(typescript@5.7.2))
@@ -3321,6 +3324,9 @@ packages:
     resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
+
+  primeicons@7.0.0:
+    resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
 
   primevue@4.2.4:
     resolution: {integrity: sha512-aMQymoO489isReSF/bScypswOnLBU29qkeTulGj3Wntb9plvzTIWjA4+iyDOsyxGmV5GVIvD+DuTw5FNCDWgSw==}
@@ -7739,6 +7745,8 @@ snapshots:
       prettier: 3.3.3
 
   prettier@3.3.3: {}
+
+  primeicons@7.0.0: {}
 
   primevue@4.2.4(vue@3.5.13(typescript@5.7.2)):
     dependencies:

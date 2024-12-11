@@ -22,6 +22,10 @@ function show() {
   toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content',life: 3000 });
 };
 
+function openInNewWindow(this: any) {
+  window.open('/tabstore/index', '_blank');
+}
+
 </script>
 
 <template>
@@ -47,7 +51,7 @@ function show() {
         class="btn btn-primary"
         @click="getStoreData"
       >
-        getStoreData
+        GetStoreData
       </button>
     </div>
 
@@ -56,6 +60,14 @@ function show() {
       to="/common/about"
     >
       About
+    </RouterLink>
+
+    <RouterLink
+      class="underline"
+      to="/tabstore/index"
+      @click="openInNewWindow"
+    >
+      Tabstore
     </RouterLink>
   </div>
 </template>

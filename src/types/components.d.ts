@@ -9,13 +9,21 @@ declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('primevue/button')['default']
     Changelog: typeof import('./../components/Changelog.vue')['default']
+    Fluid: typeof import('primevue/fluid')['default']
     IFaSolidDiceFive: typeof import('~icons/fa-solid/dice-five')['default']
     'IHeroiconsOutline:menuAlt2': typeof import('~icons/heroicons-outline/menu-alt2')['default']
     IHeroiconsOutlineMenuAlt2: typeof import('~icons/heroicons-outline/menu-alt2')['default']
+    InputText: typeof import('primevue/inputtext')['default']
     Install: typeof import('./../components/install.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Select: typeof import('primevue/select')['default']
+    SelectButton: typeof import('primevue/selectbutton')['default']
+    Textarea: typeof import('primevue/textarea')['default']
     Toast: typeof import('primevue/toast')['default']
     Update: typeof import('./../components/update.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    StyleClass: typeof import('primevue/styleclass')['default']
   }
 }

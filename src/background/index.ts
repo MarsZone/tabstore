@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         tabInfo.push(tmp)
       }
-      chrome.storage.sync.set({ key: tabInfo }).then(() => {
+      chrome.storage.local.set({ key: tabInfo }).then(() => {
         console.log(`Value is set to ${  windowId}`);
       });
     });
@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return undefined;
   }
   if(message.type === 'getStoreData'){
-    chrome.storage.sync.get("key").then((items) => {
+    chrome.storage.local.get("key").then((items) => {
       console.log(items);
     });
   }

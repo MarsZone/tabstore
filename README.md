@@ -15,3 +15,24 @@ tab数据进行同步
 
 category-项目开发
      topic-ChromeExtensions开发_年月日时分秒
+
+
+- 由于chrome限制storage.sync配额限制约为 100 KB。只能用storage.local外加unlimitedStorage来存储。
+- 先本地存储，后续增加同步功能，开发个服务器，云端同步，倒也不着急这个。
+
+1.主要流程， 点击popup。下拉选择一个分类，输入主题,默认分组'default'，选择是否关闭当前窗口，点击保存，将数据存起来。
+数据结构
+{
+     'category':{
+          'title':'项目开发'
+          'topics':[{
+               'title':'ChromeExtensions开发',
+               'close':true,
+               'group':'default',
+               'list':[
+                    {}
+               ]
+          }]
+     }
+}
+2.新增一个页面。在保存按钮下面，加个查看。展示所有的分类。
