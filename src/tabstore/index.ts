@@ -13,6 +13,9 @@ import '@/assets/base.scss'
 import './index.scss'
 import './assets/styles.scss';
 import './assets/tailwind.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "font-awesome/css/font-awesome.css";
+import "bootstrap";
 
 // routes.push({
 //   path: '/',

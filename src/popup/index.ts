@@ -6,10 +6,13 @@ import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice';
 import DialogService from 'primevue/dialogservice'
 import material from '@primevue/themes/material';
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 import App from './app.vue'
 import routes from '~pages'
 import '@/assets/base.scss'
 import './index.scss'
+
 
 routes.push({
   path: '/',
@@ -29,6 +32,7 @@ app.use(PrimeVue, {
   }
 });
 
+app.use(ElementPlus)
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);
