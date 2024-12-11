@@ -2,7 +2,7 @@
 
 <template>
   <div class="layout-footer">
-    SAKAI by
+    T
     <a href="https://tabstore.org" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">tabstore</a>
   </div>
 </template>

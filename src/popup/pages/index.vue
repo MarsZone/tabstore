@@ -23,7 +23,7 @@ function show() {
 };
 
 function openInNewWindow(this: any) {
-  window.open('/tabstore/index', '_blank');
+  window.open('/src/tabstore/', '_blank');
 }
 
 </script>
@@ -64,7 +64,7 @@ function openInNewWindow(this: any) {
 
     <RouterLink
       class="underline"
-      to="/tabstore/index"
+      to="/src/tabstore/"
       @click="openInNewWindow"
     >
       Tabstore

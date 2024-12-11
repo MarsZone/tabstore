@@ -11,7 +11,7 @@ const model = ref([
     {
         label: 'UI Components',
         items: [
-            { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/src/uikit/formlayout' },
+            { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/src/tabstore/uikit/formlayout' },
         ]
     },
     // {
