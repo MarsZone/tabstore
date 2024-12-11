@@ -27,7 +27,7 @@
     "bootstrap": "^5.3.3",
     "element-plus": "^2.9.0",
     "font-awesome": "^4.7.0",
-    "marked": "^15.0.2",
+    "marked": "^15.0.3",
     "pinia": "^2.2.6",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
