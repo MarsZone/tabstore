@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useToast } from "primevue/usetoast";
+// import { useToast } from "primevue/usetoast";
+import { ref } from 'vue'
 import { useAppStore } from '@/stores/app.store'
 
-const toast = useToast();
+// const toast = useToast();
 
 const store = useAppStore()
 
@@ -17,65 +18,89 @@ function getStoreData(){
   chrome.runtime.sendMessage({ type: 'getStoreData' });
 }
 
-function show() {
-  console.log('show')
-  toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content',life: 3000 });
-};
+// function show() {
+//   console.log('show')
+//   toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content',life: 3000 });
+// };
 
 function openInNewWindow(this: any) {
   window.open('/src/tabstore/', '_blank');
 }
 
+const value = ref('')
+const options = [
+  {
+    value: 'CatoregoryA',
+    label: 'CatoregoryA',
+  },
+]
+
 </script>
 
 <template>
-  <div class="text-center m-4 flex flex-col gap-y-2">
-    <h1 class="text-3xl font-bold underline pb-6">
+  <div class=" m-4 flex flex-col gap-y-2">
+    <!-- <Toast /> -->
+    <!-- <h1 class="text-3xl font-bold underline pb-6">
       Hello world from Popup!
-    </h1>
+    </h1> -->
 
-    <p>Name: {{ name }}</p>
-    <p>Count: {{ count }}</p>
+    <!-- <p>Name: {{ name }}</p>
+    <p>Count: {{ count }}</p> -->
+    <el-select
+      v-model="value"
+      filterable
+      allow-create
+      default-first-option
+      placeholder="Select a category"
+      style="width: 240px"
+      class="mx-auto"
+    >
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      />
+    </el-select>
+    
 
-    <Toast />
-    <Button label="Success" severity="success" @click="show" />
-
+    
     <div class="flex gap-x-2 justify-center">
-      <button
-        class="btn btn-primary"
+      <el-button
+        class=""
         @click="getAllTabsData"
       >
         GetAllTabs
-      </button>
-      <button
-        class="btn btn-primary"
+      </el-button>
+      <el-button
+        class=""
         @click="getStoreData"
       >
         GetStoreData
-      </button>
+      </el-button>
     </div>
 
-    <RouterLink
-      class="underline"
-      to="/common/about"
-    >
-      About
-    </RouterLink>
-
-    <RouterLink
+    <!-- <RouterLink
       class="underline"
       to="/src/tabstore/"
       @click="openInNewWindow"
     >
       Tabstore
+    </RouterLink> -->
+    <el-button @click="openInNewWindow">
+      ShowTabStore
+    </el-button>
+    
+    <RouterLink
+      class="underline mx-auto"
+      to="/common/about"
+    >
+      About
     </RouterLink>
   </div>
 </template>
 
 <style scoped>
-.btn {
-  @apply px-4 py-2 rounded-md bg-blue-500 text-white;
-}
 
 .logo {
   height: 6em;

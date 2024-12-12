@@ -36,3 +36,10 @@ category-项目开发
      }
 }
 2.新增一个页面。在保存按钮下面，加个查看。展示所有的分类。
+
+Done
+1.完成跳转查看分类页面信息
+
+Todo
+1.PopUp优化,去掉没用的玩意，header footer。
+下拉category,

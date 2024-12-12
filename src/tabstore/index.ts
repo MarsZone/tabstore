@@ -1,14 +1,14 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import PrimeVue from "primevue/config";
-import { createRouter, createWebHashHistory } from 'vue-router/auto'
 import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice';
 import DialogService from 'primevue/dialogservice'
 import material from '@primevue/themes/material';
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 import App from './app.vue'
 import router from './router';
-// import routes from '~pages'
 import '@/assets/base.scss'
 import './index.scss'
 import './assets/styles.scss';
@@ -16,17 +16,6 @@ import './assets/tailwind.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "font-awesome/css/font-awesome.css";
 import "bootstrap";
-
-// routes.push({
-//   path: '/',
-//   redirect: '/tabstore',
-// })
-
-// const router = createRouter({
-//   history: createWebHashHistory(import.meta.env.BASE_URL),
-//   routes,
-// })
-
 
 const app = createApp(App);
 
@@ -36,6 +25,7 @@ app.use(PrimeVue, {
   }
 });
 
+app.use(ElementPlus)
 app.use(router);
 app.use(ConfirmationService);
 app.use(ToastService);

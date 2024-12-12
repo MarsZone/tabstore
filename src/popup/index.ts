@@ -7,12 +7,12 @@ import ToastService from 'primevue/toastservice';
 import DialogService from 'primevue/dialogservice'
 import material from '@primevue/themes/material';
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import App from './app.vue'
 import routes from '~pages'
-import '@/assets/base.scss'
+import 'vite-plugin-vue-devtools/src//overlay/devtools-overlay.css';
+// import '@/assets/base.scss'
 import './index.scss'
-
+import 'element-plus/dist/index.css'
 
 routes.push({
   path: '/',
