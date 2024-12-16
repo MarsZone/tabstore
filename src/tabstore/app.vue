@@ -3,21 +3,21 @@
 </script>
 
 <template>
-  <header
+  <!-- <header
     aria-label="Site Header"
     class="bg-gray-50"
   >
     Header
-  </header>
+  </header> -->
 
   <RouterView />
 
-  <footer
+  <!-- <footer
     aria-label="Site Footer"
     class="bg-gray-50"
   >
     Footer
-  </footer>
+  </footer> -->
 </template>
 
 <style scoped>

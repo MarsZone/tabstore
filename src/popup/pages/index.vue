@@ -53,7 +53,7 @@ const options = [
       default-first-option
       placeholder="Select a category"
       style="width: 240px"
-      class="mx-auto"
+      class="mx-auto "
     >
       <el-option
         v-for="item in options"

@@ -46,7 +46,7 @@ export default defineConfig({
           baseRoute: 'common',
         },
         {
-          dir:'src/tabstore/',
+          dir:'src/tabstore/pages',
           baseRoute: 'tabstore',
         },
         {
@@ -124,6 +124,7 @@ export default defineConfig({
         iframe: 'src/content-script/iframe/index.html',
         popup: 'src/popup/index.html',
         setup: 'src/setup/index.html',
+        tabstore: 'src/tabstore/index.html',
         options: 'src/options/index.html',
       },
     },

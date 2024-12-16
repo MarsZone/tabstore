@@ -3,7 +3,7 @@
 <template>
   <div class="text-center m-4">
     <h1 class="text-3xl font-bold underline pb-6">
-      Hello world from Options!
+      Options
     </h1>
 
     <RouterLink to="/common/about">

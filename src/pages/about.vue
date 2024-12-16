@@ -2,9 +2,9 @@
 
 <template>
   <div class="m-4">
-    <h1>Extension About Page2</h1>
+    <h1>Extension About Page</h1>
 
-    <button @click="$router.back">
+    <Button @click="$router.back">
       Go Back
     </button>
 
