@@ -1,4 +1,4 @@
-import { title } from "process";
+import { title } from "node:process";
 
 chrome.runtime.onInstalled.addListener(async (opt) => {
   if (opt.reason === 'install') {
@@ -19,32 +19,69 @@ chrome.runtime.onInstalled.addListener(async (opt) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'getAllTabsData') {
+  if (message.type === 'saveTabs') {
     // chrome.tabs.query({}, (tabs) => {
     //   console.log(tabs);
     // });
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
-      console.log(tabs);
-      let tabInfo = []
-      let windowId = tabs[0].windowId
-      for(let tab of tabs){
-        let tmp = {
-          id: tab.id,
-          title: tab.title,
-          url: tab.url,
-          favIconUrl: tab.favIconUrl,
-        }
-        tabInfo.push(tmp)
-      }
-      chrome.storage.local.set({ key: tabInfo }).then(() => {
-        console.log(`Value is set to ${  windowId}`);
-      });
+    chrome.windows.getCurrent({}, (currentWindow) => {
+      chrome.tabs.query({ windowId: currentWindow.id },
+        (tabs) => {
+          console.log(tabs);
+          let tabsData = []
+          let windowId = tabs[0].windowId
+          let catoregoryValue = message.catoregoryValue
+          let category = {
+            cid: 1,
+            categoryTitle: catoregoryValue,
+            list: [
+              {
+                topicId: 1,
+                topic: "xxx",
+                windowId,
+                treeData: [
+                  {
+                    label: 'xxx',
+                    children: {},
+                  },
+                ]
+              },
+            ],
+          }
+          let urlList = [];
+          for (let tab of tabs) {
+            let tmp = {
+              tabId: tab.id,
+              label: tab.title,
+              title: tab.title,
+              url: tab.url,
+              favIconUrl: tab.favIconUrl,
+            }
+            urlList.push(tmp)
+          }
+          category.list[0].treeData[0].children = urlList;
+          tabsData.push(category)
+          chrome.storage.local.set({ tabsData }).then(() => {
+            console.log(`Value is set to ${windowId}`);
+          });
+        });
     });
+    //坑爹玩意
+    // chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    //   console.log(tabs);
+
+    // });
     // 如果你不想返回任何值，可以返回 undefined
-    return undefined;
+    return true;
   }
-  if(message.type === 'getStoreData'){
-    chrome.storage.local.get("key").then((items) => {
+  if (message.type === 'getTabsData') {
+    chrome.storage.local.get("tabsData", (items) => {
+      sendResponse({ success: true, data: items.tabsData });
+    });
+    // 告诉Chrome我们将异步发送响应
+    return true;
+  }
+  if (message.type === 'getStoreData') {
+    chrome.storage.local.get("tabsData").then((items) => {
       console.log(items);
     });
   }
@@ -58,4 +95,4 @@ globalThis.onerror = function (message, source, lineno, colno, error) {
   )
 }
 
-export {}
+export { }

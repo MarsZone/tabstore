@@ -42,7 +42,7 @@ export default {
   // },
   offline_enabled: true,
   // host_permissions: [],
-  permissions: ['storage', 'tabs', 'background','unlimitedStorage'],
+  permissions: ['storage', 'tabs','activeTab', 'background','unlimitedStorage'],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],
@@ -54,9 +54,9 @@ export default {
     },
   ],
   icons: {
-    16: 'src/assets/logo.png',
-    24: 'src/assets/logo.png',
-    32: 'src/assets/logo.png',
-    128: 'src/assets/logo.png',
+    16: 'src/assets/logoTop.png',
+    24: 'src/assets/logoTop.png',
+    32: 'src/assets/logoTop.png',
+    128: 'src/assets/logoTop.png',
   },
 } as ManifestV3Export
