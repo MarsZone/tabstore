@@ -55,7 +55,7 @@ export default {
       //   console.log(children.url)
       // }
       chrome.windows.create({
-        url: data.children.map(child => child.url)
+        url: data.children.map(child => child.url),state: 'maximized'
       });
     },
     isTopic(data) {

@@ -1,12 +1,40 @@
 <script setup>
 import { useLayout } from '@tabstore/layout/composables/layout';
+import { useConfirm } from "primevue/useconfirm";
 import AppConfigurator from './AppConfigurator.vue';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+const confirm = useConfirm();
+
+function handleTrashClick(){
+  confirm.require({
+        message: 'Are you sure you want to clear all data?',
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Yes'
+        },
+        accept: () => {
+            // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+            // console.log("clear")
+            chrome.runtime.sendMessage({ type: 'clearStoreData' });
+        },
+        reject: () => {
+            // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+}
+
 </script>
 
 <template>
   <div class="layout-topbar">
+    <ConfirmDialog />
     <div class="layout-topbar-logo-container">
       <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
         <i class="pi pi-bars" />
@@ -36,7 +64,6 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
         </svg> -->
 
         <img src="@/assets/logoTop.png" alt="Logo Top" width="54" height="54">
-
         <span>TabStore</span>
       </router-link>
     </div>
@@ -64,9 +91,17 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
         <i class="pi pi-ellipsis-v" />
       </button> -->
 
-      <!-- <div class="layout-topbar-menu hidden lg:block">
+      <div class="layout-topbar-menu hidden lg:block">
         <div class="layout-topbar-menu-content">
-          <button type="button" class="layout-topbar-action">
+          <button
+            v-tooltip.left="'Clear all data'" type="button" 
+            class="layout-topbar-action"
+            @click="handleTrashClick"
+          >
+            <i class="pi pi-trash" />
+            <span>Calendar</span>
+          </button>
+          <!-- <button type="button" class="layout-topbar-action">
             <i class="pi pi-calendar" />
             <span>Calendar</span>
           </button>
@@ -77,9 +112,9 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
           <button type="button" class="layout-topbar-action">
             <i class="pi pi-user" />
             <span>Profile</span>
-          </button>
+          </button> -->
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

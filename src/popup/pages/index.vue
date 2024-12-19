@@ -224,7 +224,7 @@ function onTopicChange(value: any) {
         </el-button>
       </el-col>
       <el-col :span="12">
-        <el-button class="w-full" @click="clearStoreData">
+        <el-button class="w-full" @click="clearStoreData" disabled>
           ClearStoreData
         </el-button>
       </el-col>
