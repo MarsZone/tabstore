@@ -23,4 +23,7 @@ declare module 'vue' {
     Toast: typeof import('primevue/toast')['default']
     Update: typeof import('./../components/update.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    Tooltip: typeof import('primevue/tooltip')['default']
+  }
 }
