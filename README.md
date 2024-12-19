@@ -35,13 +35,14 @@ category-项目开发
           }]
      }
 }
-2.新增一个页面。在保存按钮下面，加个查看。展示所有的分类。 done
-1.完成跳转查看分类页面信息                             done
-Todo
-1.PopUp优化,去掉没用的玩意，header footer。done
+-. 新增一个页面。在保存按钮下面，加个查看。展示所有的分类。 done
+-. 完成跳转查看分类页面信息                             done
+
+# Todo
+-. PopUp优化,去掉没用的玩意，header footer。done
 下拉category.       done
-1.换一下logo        done
-点击改名字，SaveTabs。
+-. 换一下logo        done
+-. 点击改名字，SaveTabs。
     1.点击，解析，按结构组装数据，按照自定义数据格式保存到Storage.local。
     再加个选项，是否关闭当前页面。
 要在查看页面增加 OpenAll
