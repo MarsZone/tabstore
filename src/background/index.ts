@@ -17,61 +17,147 @@ chrome.runtime.onInstalled.addListener(async (opt) => {
     })
   }
 })
+function genUrlList(tabs){
+  let urlList = [];
+  for (let tab of tabs) {
+    let tmp = {
+      tabId: tab.id,
+      label: tab.title,
+      title: tab.title,
+      url: tab.url,
+      favIconUrl: tab.favIconUrl,
+    }
+    urlList.push(tmp)
+  }
+  return urlList
+}
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+function saveNewCategory(cid,windowId,formData,tabs) {
+  cid=1
+  let tabsData = []
+  let catoregoryValue = formData.catoregoryValue
+  let topicValue = formData.topicValue
+  chrome.storage.local.get("tabsData", (items) => {
+    if (items.tabsData) {
+      tabsData = items.tabsData
+      let maxCid = 1
+      for (let tab of tabsData) {
+        if (tab.cid > maxCid) {
+          maxCid = tab.cid
+        }
+      }
+      cid = maxCid + 1
+    }
+    let category = {
+      cid,
+      categoryTitle: catoregoryValue,
+      list: [
+        {
+          topicId: 1,
+          topic: topicValue,
+          windowId,
+          treeData: [
+            {
+              label: topicValue,
+              children: {},
+            },
+          ]
+        },
+      ],
+    }
+    saveTabs(tabsData,category,tabs)
+  });
+}
+function saveTabs(tabsData,category,tabs){
+  let urlList = genUrlList(tabs)
+  category.list[0].treeData[0].children = urlList;
+  tabsData.push(category)
+  chrome.storage.local.set({ tabsData }).then(() => {
+    // console.log(`Value is set to ${windowId}`);
+    console.log('tabsData saved')
+  });
+}
+
+function saveTopics(cid,topicId,windowId,formData,tabs){
+  chrome.storage.local.get("tabsData", (items) => {
+    if(items.tabsData){
+      let urlList = genUrlList(tabs)
+      for(let item of items.tabsData){
+        if(item.cid === cid){
+          let category = item;
+          if(topicId!==0){
+            for(let topic of category.list){
+              if(topic.topicId === topicId){
+                topic.treeData = urlList
+              }
+            }
+          }else{
+            let maxTopicId = 1
+            for(let topic of category.list){
+              if(topic.topicId > maxTopicId){
+                maxTopicId = topic.topicId
+              }
+            }
+            topicId = maxTopicId+1
+            let topic = {
+              topicId,
+              topic: formData.topicValue,
+              windowId,
+              treeData: [
+                {
+                  label: formData.topicValue,
+                  children: urlList,
+                },
+              ]
+            }
+            item.list.push(topic)
+          }
+        }
+      }
+      chrome.storage.local.set({ tabsData:items.tabsData }).then(() => {
+        // console.log(`Value is set to ${windowId}`);
+        console.log('tabsData saved')
+      });
+    }
+  })
+}
+    
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
   if (message.type === 'saveTabs') {
     // chrome.tabs.query({}, (tabs) => {
     //   console.log(tabs);
     // });
-    chrome.windows.getCurrent({}, (currentWindow) => {
+    chrome.windows.getLastFocused({}, (currentWindow) => {
       chrome.tabs.query({ windowId: currentWindow.id },
         (tabs) => {
           console.log(tabs);
+          // 如果cid 为0，topic肯定也是0
+          // 新创建，新创建要看是否已经有了tabsData,有的话就取cid最大值+1
+          // 如果cid不为0，topic可能为0或者不为0.
+          // 如果topic 不为0，那就更新topic下面的children。
+          // 如果为0，就新增一个，取这个category下的最大的topicId+1
+          // 如果cid，0，topic为0，名称重复，就覆盖
+
           let tabsData = []
-          let windowId = tabs[0].windowId
-          let catoregoryValue = message.catoregoryValue
-          let category = {
-            cid: 1,
-            categoryTitle: catoregoryValue,
-            list: [
-              {
-                topicId: 1,
-                topic: "xxx",
-                windowId,
-                treeData: [
-                  {
-                    label: 'xxx',
-                    children: {},
-                  },
-                ]
-              },
-            ],
+          let windowId = currentWindow.id
+          let cid = message.formData.catoregoryId
+          let topicId  = message.formData.topicId
+          let catoregoryValue = message.formData.catoregoryValue
+          let topicValue = message.formData.topicValue
+          if(cid === 0){
+            saveNewCategory(cid,windowId,message.formData,tabs)
+          }else{
+            saveTopics(cid,topicId,windowId,message.formData,tabs)
           }
-          let urlList = [];
-          for (let tab of tabs) {
-            let tmp = {
-              tabId: tab.id,
-              label: tab.title,
-              title: tab.title,
-              url: tab.url,
-              favIconUrl: tab.favIconUrl,
-            }
-            urlList.push(tmp)
-          }
-          category.list[0].treeData[0].children = urlList;
-          tabsData.push(category)
-          chrome.storage.local.set({ tabsData }).then(() => {
-            console.log(`Value is set to ${windowId}`);
-          });
         });
     });
-    //坑爹玩意
+    //坑爹玩意会获取不到
     // chrome.tabs.query({ currentWindow: true }, (tabs) => {
     //   console.log(tabs);
-
     // });
     // 如果你不想返回任何值，可以返回 undefined
-    return true;
+    sendResponse({ success: true });
   }
   if (message.type === 'getTabsData') {
     chrome.storage.local.get("tabsData", (items) => {
@@ -84,7 +170,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.storage.local.get("tabsData").then((items) => {
       console.log(items);
     });
+    
   }
+  if(message.type === 'clearStoreData'){
+    chrome.storage.local.clear().then(() => {
+      console.log('All data cleared');
+    });
+  }
+  // sendResponse({ success: true });
 });
 
 console.log('hello world from background')

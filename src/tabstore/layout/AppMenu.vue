@@ -8,12 +8,12 @@ const model = ref([
         label: 'Home',
         items: [{ label: 'Home', icon: 'pi pi-fw pi-home', to: '/src/tabstore' }]
     },
-    {
-        label: 'UI Components',
-        items: [
-            { label: 'TestPage', icon: 'pi pi-fw pi-id-card', to: '/src/tabstore/uikit/formlayout' },
-        ]
-    },
+    // {
+    //     label: 'UI Components',
+    //     items: [
+    //         { label: 'TestPage', icon: 'pi pi-fw pi-id-card', to: '/src/tabstore/uikit/formlayout' },
+    //     ]
+    // },
     // {
     //     label: 'Pages',
     //     icon: 'pi pi-fw pi-briefcase',
