@@ -1,4 +1,4 @@
--- todo
+Finished
 - 在popup页面，增加一个按钮。点击后获取当前chrome所有tab的信息，打印出来。
 ![picture 0](images/2feae5430d2e317978ed58e0937da4f46c0d035fafdaad4dfa316c818a373f69.png)  
 
@@ -22,6 +22,7 @@ category-项目开发
 
 1.主要流程， 点击popup。下拉选择一个分类，输入主题,默认分组'default'，选择是否关闭当前窗口，点击保存，将数据存起来。
 数据结构  done
+```
 {
      'category':{
           'title':'项目开发'
@@ -35,14 +36,15 @@ category-项目开发
           }]
      }
 }
+```
 -. 新增一个页面。在保存按钮下面，加个查看。展示所有的分类。 done
 -. 完成跳转查看分类页面信息                             done
 
 # Todo
--. PopUp优化,去掉没用的玩意，header footer。done
-下拉category.       done
--. 换一下logo        done
--. 点击改名字，SaveTabs。
+- PopUp优化,去掉没用的玩意，header footer。done
+- 下拉category.       done
+- 换一下logo        done
+- 点击改名字，SaveTabs。
     1.点击，解析，按结构组装数据，按照自定义数据格式保存到Storage.local。
     再加个选项，是否关闭当前页面。
 要在查看页面增加 OpenAll
