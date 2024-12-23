@@ -16,7 +16,9 @@ export default {
       dialogVisible:  false,
       isLoadedData: false,
       loadingData: true,
+      selectType:"",
       topicSelect:{},
+      tabSelect:{},
       tabsData: [],
     };
   },
@@ -66,18 +68,36 @@ export default {
       });
     },
     confirmRemove(element){
+      this.selectType = "topic"
       this.topicSelect = element
       this.dialogVisible = true
     },
-    deleteTopics(){
+    removeTab(element,data){
+      console.log(element)
+      console.log(data)
+      this.selectType = "tab"
+      this.topicSelect = element
+      this.tabSelect = data
+      this.dialogVisible = true
+
+    },
+    deleteItem(){
       this.dialogVisible = false
-      this.removeTopicById(this.tabsData,this.topicSelect.topicId)
+      if(this.selectType === 'topic'){
+        this.removeTopicById()
+      }
+      if(this.selectType === 'tab'){
+        this.removeTabById()
+      }
       this.saveToChrome()
     },
-    removeTopicById(tabsData, topicId) {
-      for (let item of tabsData) {
-        item.list = item.list.filter(topic => topic.topicId !== topicId);
+    removeTopicById() {
+      for (let item of this.tabsData) {
+        item.list = item.list.filter(topic => topic.topicId !== this.topicSelect.topicId);
       }
+    },
+    removeTabById() {
+     this.topicSelect.treeData = this.topicSelect.treeData.filter(tab => tab.tabId !== this.tabSelect.tabId);
     },
     isTopic(data) {
       if (data.children) {
@@ -119,6 +139,18 @@ export default {
                       <span v-tooltip="node.label">
                         <el-image style="width: 10px; height: 10px" lazy :src="getUrl(data)" />
                         {{ node.label.length > 30 ? `${node.label.slice(0, 30)}...` : node.label }}
+                      </span>
+                      <span v-if="!isTopic(data)">
+                        <el-tooltip
+                          class="box-item"
+                          effect="dark"
+                          content="Remove this tab"
+                          placement="top"
+                        >
+                          <el-icon class="ml-2" @click.stop="removeTab(element,data)">
+                            <Remove />
+                          </el-icon>
+                        </el-tooltip>
                       </span>
                       <span v-if="isTopic(data)">
                         <el-tooltip
@@ -165,13 +197,13 @@ export default {
       title="Tips"
       width="500"
     >
-      <span>Are you confirm to delete topics?</span>
+      <span>Are you confirm to delete {{ selectType }}?</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">
             Cancel
           </el-button>
-          <el-button type="primary" @click="deleteTopics">
+          <el-button type="primary" @click="deleteItem">
             Confirm
           </el-button>
         </div>
