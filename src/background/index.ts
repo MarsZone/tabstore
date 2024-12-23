@@ -170,14 +170,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
     chrome.storage.local.get("tabsData").then((items) => {
       console.log(items);
     });
-    
+  }
+  if (message.type === 'syncStoreData') {
+    let tabsData = message.tabsData
+    chrome.storage.local.set({ tabsData }).then(() => {
+      console.log('tabsData saved')
+    });
   }
   if(message.type === 'clearStoreData'){
     chrome.storage.local.clear().then(() => {
       console.log('All data cleared');
     });
   }
-  // sendResponse({ success: true });
+  sendResponse({ success: true });
 });
 
 console.log('hello world from background')

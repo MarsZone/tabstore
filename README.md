@@ -44,9 +44,16 @@ category-项目开发
 - PopUp优化,去掉没用的玩意，header footer。done
 - 下拉category.       done
 - 换一下logo        done
-- 点击改名字，SaveTabs。
+- 点击改名字，SaveTabs。 done
     1.点击，解析，按结构组装数据，按照自定义数据格式保存到Storage.local。
-    再加个选项，是否关闭当前页面。
-要在查看页面增加 OpenAll
+    再加个选项，是否关闭当前页面。 done
+要在查看页面增加 OpenAll done
 
 2024-12-16
+再增加一个topic删除功能。
+- 导入导出数据功能 done
+
+2024-12-13
+- 在topic，加一条，删一条功能。
+- 删除，pop确认
+- pop追加

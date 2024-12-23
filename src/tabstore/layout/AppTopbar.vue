@@ -1,6 +1,7 @@
 <script setup>
 import { useLayout } from '@tabstore/layout/composables/layout';
 import { useConfirm } from "primevue/useconfirm";
+import { saveAs } from 'file-saver';
 import AppConfigurator from './AppConfigurator.vue';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
@@ -29,6 +30,44 @@ function handleTrashClick(){
         }
     });
 }
+
+function exportData(){
+// 导出json文件;
+  // new Bolb()第一个参数就是我们要导出的json数据
+  chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response) => {
+    const blob = new Blob([JSON.stringify(response.data)], { type: 'text/plain;charset=utf-8' });
+    console.log('导出json', blob);
+    saveAs(blob, `data.json`); // 后面的是json文件的默认名称
+  });
+}
+
+const refFile = ref(null);
+ 
+function importData(){
+  refFile.value.click();
+}
+const fileLoad = () => {
+    const selectedFile = refFile.value.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (!reader.result) return;
+      try {
+        const data = JSON.parse(reader.result);
+        console.log(data)
+        chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData: this.tabsData }, {}, (response) => {
+          console.log("已更新");
+        });
+        // 具体需求的逻辑 data 就是导入的数据是 对象格式
+        // treeData.value = getTreeData(data);
+        // initSourceDataAfter(treeData.value);
+      } catch (error) {
+        message.error('导入失败，请检查文件内容！');
+      } finally {
+        refFile.value.value = '';
+      }
+    };
+    reader.readAsText(selectedFile);
+  };
 
 </script>
 
@@ -90,9 +129,34 @@ function handleTrashClick(){
       >
         <i class="pi pi-ellipsis-v" />
       </button> -->
-
+      <input
+        id="files"
+        ref="refFile"
+        type="file"
+        style="display: none"
+        @change="fileLoad"
+      >
       <div class="layout-topbar-menu hidden lg:block">
         <div class="layout-topbar-menu-content">
+          <!-- 导入导出Json -->
+          <button
+            v-tooltip.left="'Exprot'" type="button" 
+            class="layout-topbar-action"
+            @click="exportData"
+          >
+            <i class="pi pi-file-export" />
+            <span>Calendar</span>
+          </button>
+
+          <button
+            v-tooltip.left="'Import'" type="button" 
+            class="layout-topbar-action"
+            @click="importData"
+          >
+            <i class="pi pi-file-import" />
+            <span>Calendar</span>
+          </button>
+          
           <button
             v-tooltip.left="'Clear all data'" type="button" 
             class="layout-topbar-action"
@@ -101,6 +165,7 @@ function handleTrashClick(){
             <i class="pi pi-trash" />
             <span>Calendar</span>
           </button>
+
           <!-- <button type="button" class="layout-topbar-action">
             <i class="pi pi-calendar" />
             <span>Calendar</span>

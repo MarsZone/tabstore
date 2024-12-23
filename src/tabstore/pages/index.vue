@@ -13,8 +13,10 @@ export default {
         children: 'children',
         label: 'label',
       },
+      dialogVisible:  false,
       isLoadedData: false,
       loadingData: true,
+      topicSelect:{},
       tabsData: [],
     };
   },
@@ -49,7 +51,7 @@ export default {
     getUrl(data) {
       return data.favIconUrl
     },
-    OpenAllTabs(data) {
+    openAllTabs(data) {
       // console.log(data)
       // for(let children of data.children){
       //   console.log(children.url)
@@ -57,6 +59,25 @@ export default {
       chrome.windows.create({
         url: data.children.map(child => child.url),state: 'maximized'
       });
+    },
+    saveToChrome(){
+      chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData: this.tabsData }, {}, (response) => {
+        console.log("已更新");
+      });
+    },
+    confirmRemove(element){
+      this.topicSelect = element
+      this.dialogVisible = true
+    },
+    deleteTopics(){
+      this.dialogVisible = false
+      this.removeTopicById(this.tabsData,this.topicSelect.topicId)
+      this.saveToChrome()
+    },
+    removeTopicById(tabsData, topicId) {
+      for (let item of tabsData) {
+        item.list = item.list.filter(topic => topic.topicId !== topicId);
+      }
     },
     isTopic(data) {
       if (data.children) {
@@ -106,8 +127,19 @@ export default {
                           content="Open all tabs"
                           placement="top"
                         >
-                          <el-icon @click.stop="OpenAllTabs(data)">
+                          <el-icon @click.stop="openAllTabs(data)">
                             <ChromeFilled />
+                          </el-icon>
+                        </el-tooltip>
+                        
+                        <el-tooltip
+                          class="box-item"
+                          effect="dark"
+                          content="Delete this topic"
+                          placement="top"
+                        >
+                          <el-icon class="ml-2" @click.stop="confirmRemove(element)">
+                            <Delete />
                           </el-icon>
                         </el-tooltip>
                       </span>
@@ -127,6 +159,24 @@ export default {
         </el-card>
       </div>
     </div>
+
+    <el-dialog
+      v-model="dialogVisible"
+      title="Tips"
+      width="500"
+    >
+      <span>Are you confirm to delete topics?</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">
+            Cancel
+          </el-button>
+          <el-button type="primary" @click="deleteTopics">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 

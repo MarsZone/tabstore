@@ -2,7 +2,7 @@
   "name": "tabstore",
   "displayName": "tabstore",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Chrome tab manager",
   "repository": {
@@ -27,6 +27,7 @@
     "@primevue/themes": "^4.2.4",
     "bootstrap": "^5.3.3",
     "element-plus": "^2.9.0",
+    "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
     "marked": "^15.0.2",
     "pinia": "^2.2.6",
