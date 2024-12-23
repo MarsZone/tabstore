@@ -97,7 +97,7 @@ export default {
       }
     },
     removeTabById() {
-     this.topicSelect.treeData.children[0] = this.topicSelect.treeData.children[0].filter(tab => tab.tabId !== this.tabSelect.tabId);
+     this.topicSelect.treeData[0].children = this.topicSelect.treeData[0].children.filter(tab => tab.tabId !== this.tabSelect.tabId);
     },
     isTopic(data) {
       if (data.children) {
