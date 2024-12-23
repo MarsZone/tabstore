@@ -54,14 +54,15 @@ const fileLoad = () => {
       try {
         const data = JSON.parse(reader.result);
         console.log(data)
-        chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData: this.tabsData }, {}, (response) => {
+        chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData:data }, {}, (response) => {
           console.log("已更新");
         });
         // 具体需求的逻辑 data 就是导入的数据是 对象格式
         // treeData.value = getTreeData(data);
         // initSourceDataAfter(treeData.value);
       } catch (error) {
-        message.error('导入失败，请检查文件内容！');
+        // message.error('导入失败，请检查文件内容！');
+        console.log('导入失败，请检查文件内容！');
       } finally {
         refFile.value.value = '';
       }
