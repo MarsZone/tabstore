@@ -69,7 +69,17 @@ function loadOptions() {
     }
   });
 }
-
+const saveCurrentTab = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      // console.log('submit!')
+      chrome.runtime.sendMessage({ type: 'saveCurrentTab', formData: ruleForm }, {}, (response: any) => {});
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+}
 
 const saveTabs = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -77,9 +87,7 @@ const saveTabs = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // console.log('submit!')
       chrome.runtime.sendMessage({ type: 'saveTabs', formData: ruleForm }, {}, (response: any) => {
-        // 处理返回的数据
         chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response: any) => {
-          // 处理返回的数据
           console.log("收到返回");
           console.log(response.data);
           console.log(`Rule${ruleForm.catoregoryValue}`)
@@ -123,7 +131,12 @@ function getStoreData() {
 function clearStoreData() {
   chrome.runtime.sendMessage({ type: 'clearStoreData' });
 }
-
+async function getCurrentTab() {
+  let queryOptions = { active: true, lastFocusedWindow: true };
+  let [tab] = await chrome.tabs.query(queryOptions);
+  console.log(tab);
+  return tab;
+}
 // function show() {
 //   console.log('show')
 //   toast.add({ severity: 'info', summary: 'Info', detail: 'Message Content',life: 3000 });
@@ -217,6 +230,11 @@ function onTopicChange(value: any) {
         SaveTabs
       </el-button>
     </el-row>
+    <el-row>
+      <el-button class="w-full" @click="saveCurrentTab(ruleFormRef)">
+        SaveCurrentTab
+      </el-button>
+    </el-row>
     <el-row :gutter="20">
       <el-col :span="12">
         <el-button class="w-full" @click="getStoreData">
@@ -224,7 +242,7 @@ function onTopicChange(value: any) {
         </el-button>
       </el-col>
       <el-col :span="12">
-        <el-button class="w-full" @click="clearStoreData" disabled>
+        <el-button class="w-full" @click="clearStoreData" >
           ClearStoreData
         </el-button>
       </el-col>

@@ -121,7 +121,18 @@ function saveTopics(cid,topicId,windowId,formData,tabs){
     }
   })
 }
-    
+
+let activeTabId;
+let activeTab;
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  activeTabId = activeInfo.tabId;
+  // console.log(activeTabId);
+  chrome.tabs.get(activeTabId, (tab) => {
+    // console.log(tab);
+    activeTab=tab;
+  })
+});
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
   if (message.type === 'saveTabs') {
@@ -159,6 +170,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
     // 如果你不想返回任何值，可以返回 undefined
     sendResponse({ success: true });
   }
+  if(message.type === 'saveCurrentTab'){
+    let cid = message.formData.catoregoryId
+    let topicId  = message.formData.topicId
+    let newTab = {
+      tabId: activeTabId,
+      title: activeTab.title,
+      label: activeTab.title,
+      favIconUrl: activeTab.favIconUrl,
+      url : activeTab.url,
+    }
+    chrome.storage.local.get("tabsData", (items) => {
+      if (items.tabsData) {
+        let tabsData = items.tabsData;
+        let category = tabsData.find(item => item.cid === cid);
+        if (category) {
+          if (topicId !== 0) {
+            let topic = category.list.find(topic => topic.topicId === topicId);
+            if (topic) {
+              const tabExists = topic.treeData[0].children.some(child => child.tabId === newTab.tabId);
+              if (!tabExists) {
+                topic.treeData[0].children.push(newTab);
+              }
+            }
+          }
+        }
+        chrome.storage.local.set({ tabsData }).then(() => {
+          console.log('tabsData saved')
+        });
+      }
+    });
+  }
   if (message.type === 'getTabsData') {
     chrome.storage.local.get("tabsData", (items) => {
       sendResponse({ success: true, data: items.tabsData });
@@ -178,12 +220,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
     });
   }
   if(message.type === 'clearStoreData'){
-    chrome.storage.local.clear().then(() => {
-      console.log('All data cleared');
+    // chrome.storage.local.clear().then(() => {
+    //   console.log('All data cleared');
+    // });
+    chrome.tabs.query({ lastFocusedWindow: true, active: true }, (tabs) => {
+      console.log(tabs[0]);
     });
   }
   sendResponse({ success: true });
 });
+
 
 console.log('hello world from background')
 
