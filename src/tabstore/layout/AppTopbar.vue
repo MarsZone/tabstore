@@ -37,7 +37,9 @@ function exportData(){
   chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response) => {
     const blob = new Blob([JSON.stringify(response.data)], { type: 'text/plain;charset=utf-8' });
     console.log('导出json', blob);
-    saveAs(blob, `data.json`); // 后面的是json文件的默认名称
+    let dateTime =new Date().toISOString().replace(/[-:TZ]/g, '').slice(0, 14);
+    let exportDataName = `data_${dateTime}.json`;
+    saveAs(blob, exportDataName); // 后面的是json文件的默认名称
   });
 }
 
