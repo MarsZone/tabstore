@@ -58,7 +58,7 @@ category-项目开发
 - 删除，pop确认                done
 - pop追加                     done
 - 导出的文件名，年月日。       done
-- category 重命名
+- category 重命名             done
 - category 删除
 - category 顺序调整
 - category 收起展开，配置及功能，默认收起。

@@ -254,8 +254,6 @@ function onTopicChange(value: any) {
     </el-row>
 
 
-
-
     <RouterLink class="underline mx-auto" to="/common/about">
       About
     </RouterLink>

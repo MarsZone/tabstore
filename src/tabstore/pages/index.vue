@@ -1,11 +1,14 @@
 <script>
 import draggable from "vuedraggable";
+import RenameDialog from './components/RenameDialog.vue';
+
 export default {
   name: "TwoLists",
   display: "Two Lists",
   order: 1,
   components: {
-    Draggable: draggable
+    Draggable: draggable,
+    RenameDialog
   },
   data() {
     return {
@@ -17,6 +20,7 @@ export default {
       isLoadedData: false,
       loadingData: true,
       selectType:"",
+      selectCategory:{},
       topicSelect:{},
       tabSelect:{},
       tabsData: [],
@@ -104,6 +108,15 @@ export default {
         return true
       }
       return false;
+    },
+    onNameSubmit(name){
+      // console.log(name)
+      this.selectCategory.categoryTitle=name
+      this.saveToChrome()
+    },
+    removeCategory(item){
+      this.selectCategory = item
+      this.$refs.RenameDialog.openDialog();
     }
   }
 };
@@ -122,8 +135,18 @@ export default {
       <div v-for="(item) in tabsData " :key="item.cid" class="col-6 col-item">
         <el-card>
           <template #header>
-            <div class="card-header">
+            <div class="card-header custom-tree-node">
               <h3>{{ item.categoryTitle }}</h3>
+              <el-tooltip
+                class="box-item"
+                effect="dark"
+                content="Rename"
+                placement="top"
+              >
+                <el-icon class="ml-2" @click.stop="removeCategory(item)">
+                  <Edit />
+                </el-icon>
+              </el-tooltip>
             </div>
           </template>
           <Draggable class="list-group" :list="item.list" group="people" item-key="name" @change="log">
@@ -209,6 +232,8 @@ export default {
         </div>
       </template>
     </el-dialog>
+
+    <RenameDialog ref="RenameDialog" @submit-new-name="onNameSubmit" />
   </div>
 </template>
 
@@ -217,7 +242,9 @@ export default {
 .col-item {
   margin-bottom: 10px;
 }
-
+.fr{
+  float: right; padding: 3px 0
+}
 .custom-tree-node {
   flex: 1;
   display: flex;

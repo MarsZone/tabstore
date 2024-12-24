@@ -42,6 +42,7 @@ export default antfu(
       'perfectionist/sort-imports': 'off',
       "no-unused-vars":"off",
       'import/order': 'warn',
+      'vue/custom-event-name-casing': 'off',
       'prefer-const': 'off',
       "unused-imports/no-unused-vars":"off",
       '@typescript-eslint/ban-ts-comment': 'warn',
