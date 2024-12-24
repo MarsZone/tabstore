@@ -54,6 +54,10 @@ category-项目开发
 - 导入导出数据功能 done
 
 2024-12-13
-- 在topic，加一条，删一条功能。
-- 删除，pop确认
-- pop追加
+- 在topic，加一条，删一条功能。 done
+- 删除，pop确认                done
+- pop追加                     done
+- category 重命名
+- category 删除
+- category 顺序调整
+- category 收起展开，配置及功能，默认收起。
