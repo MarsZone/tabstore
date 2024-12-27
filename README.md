@@ -59,6 +59,8 @@ category-项目开发
 - pop追加                     done
 - 导出的文件名，年月日。       done
 - category 重命名             done
+- import后刷新tab管理页面，并且提示一下。
+- save后反馈，刷新tab管理页面。
 - category 删除
 - category 顺序调整
 - category 收起展开，配置及功能，默认收起。

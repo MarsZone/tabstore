@@ -143,7 +143,7 @@ async function getCurrentTab() {
 // };
 
 function openInNewWindow(this: any) {
-  window.open('/src/tabstore/', '_blank');
+  window.open('/src/tabstore/index.html', '_blank');
 }
 
 function onCatoregoryChange(value: any) {
@@ -242,7 +242,7 @@ function onTopicChange(value: any) {
         </el-button>
       </el-col>
       <el-col :span="12">
-        <el-button class="w-full" @click="clearStoreData" >
+        <el-button class="w-full" @click="clearStoreData">
           ClearStoreData
         </el-button>
       </el-col>

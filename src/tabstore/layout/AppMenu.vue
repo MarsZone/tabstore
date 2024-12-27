@@ -6,12 +6,12 @@ import AppMenuItem from './AppMenuItem.vue';
 const model = ref([
     {
         label: 'Home',
-        items: [{ label: 'Home', icon: 'pi pi-fw pi-home', to: '/src/tabstore' }]
+        items: [{ label: 'Home', icon: 'pi pi-fw pi-home', to: '/tabstore' }]
     },
     // {
     //     label: 'UI Components',
     //     items: [
-    //         { label: 'TestPage', icon: 'pi pi-fw pi-id-card', to: '/src/tabstore/uikit/formlayout' },
+    //         { label: 'TestPage', icon: 'pi pi-fw pi-id-card', to: '/tabstore/uikit/formlayout' },
     //     ]
     // },
     // {

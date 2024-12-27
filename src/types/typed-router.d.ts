@@ -63,6 +63,12 @@ declare module 'vue-router/auto/routes' {
       Record<never, never>,
       Record<never, never>
     >
+    '/tabstore/': RouteRecordInfo<
+      '/tabstore/',
+      '/tabstore',
+      Record<never, never>,
+      Record<never, never>
+    >
     '/setup/': RouteRecordInfo<
       '/setup/',
       '/setup',
