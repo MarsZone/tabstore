@@ -137,6 +137,34 @@ export default {
       this.selectCategory.categoryTitle=name
       this.saveToChrome()
     },
+    upCategory(item){
+      let index = this.tabsData.indexOf(item);
+      if(index===0){
+        ElMessage({
+          message: 'Sorry you cant move it up.Its first place.',
+          type: 'warning',
+        })
+      }else{
+       let upper = this.tabsData[index-1] 
+       this.tabsData[index-1] = item
+       this.tabsData[index] = upper
+      }
+      this.saveToChrome()
+    },
+    downCategory(item){
+      let index = this.tabsData.indexOf(item);
+      if(index===this.tabsData.length-1){
+        ElMessage({
+          message: 'Sorry you cant move it down.Its last place.',
+          type: 'warning',
+        })
+      }else{
+       let downItem = this.tabsData[index+1]
+       this.tabsData[index+1] = item
+       this.tabsData[index] = downItem
+      }
+      this.saveToChrome()
+    },
     removeCategory(item){
       this.selectCategory = item
       this.$refs.RenameDialog.openDialog();
@@ -160,16 +188,38 @@ export default {
           <template #header>
             <div class="card-header custom-tree-node">
               <h3>{{ item.categoryTitle }}</h3>
-              <el-tooltip
-                class="box-item"
-                effect="dark"
-                content="Rename"
-                placement="top"
-              >
-                <el-icon class="ml-2" @click.stop="removeCategory(item)">
-                  <Edit />
-                </el-icon>
-              </el-tooltip>
+              <div class="operbtn">
+                <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="Up Category"
+                  placement="top"
+                >
+                  <el-icon class="ml-2" @click.stop="upCategory(item)">
+                    <ArrowUp />
+                  </el-icon>
+                </el-tooltip>
+                <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="Down Category"
+                  placement="top"
+                >
+                  <el-icon class="ml-2" @click.stop="downCategory(item)">
+                    <ArrowDown />
+                  </el-icon>
+                </el-tooltip>
+                <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="Rename"
+                  placement="top"
+                >
+                  <el-icon class="ml-2" @click.stop="removeCategory(item)">
+                    <Edit />
+                  </el-icon>
+                </el-tooltip>
+              </div>
             </div>
           </template>
           <Draggable class="list-group" :list="item.list" group="people" item-key="name" @change="log">
