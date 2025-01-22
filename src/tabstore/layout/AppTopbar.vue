@@ -2,6 +2,7 @@
 import { useLayout } from '@tabstore/layout/composables/layout';
 import { useConfirm } from "primevue/useconfirm";
 import { saveAs } from 'file-saver';
+import emitter from '../mitt';
 import AppConfigurator from './AppConfigurator.vue';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
@@ -24,6 +25,7 @@ function handleTrashClick(){
             // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
             // console.log("clear")
             chrome.runtime.sendMessage({ type: 'clearStoreData' });
+            emitter.emit('topbar', { cmd: 'clearStoreData' })
         },
         reject: () => {
             // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
@@ -59,6 +61,7 @@ const fileLoad = () => {
         chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData:data }, {}, (response) => {
           console.log("已更新");
         });
+        emitter.emit('topbar', { cmd: 'loadData' })
         // 具体需求的逻辑 data 就是导入的数据是 对象格式
         // treeData.value = getTreeData(data);
         // initSourceDataAfter(treeData.value);

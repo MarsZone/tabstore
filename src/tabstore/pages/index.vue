@@ -1,6 +1,9 @@
 <script>
 import draggable from "vuedraggable";
+import { ElMessage } from 'element-plus'
+import emitter from '../mitt';
 import RenameDialog from './components/RenameDialog.vue';
+
 
 export default {
   name: "TwoLists",
@@ -27,21 +30,41 @@ export default {
     };
   },
   mounted() {
-    // 发送消息给后台脚本
-    chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response) => {
-      // 处理返回的数据
-      console.log("收到返回");
-      console.log(response.data);
-      this.tabsData = response.data;
-      this.loadingData = false
-      this.isLoadedData = true
-      if (!response.data) {
-        //展示无数据
-        this.isLoadedData = false
+    this.loadData();
+    emitter.on('topbar', e => {
+        console.log(`afdafd${e}`)
+        if(e.cmd==='loadData'){
+          ElMessage({
+            message: 'Data load successed',
+            type: 'success',
+          })
+        }
+        if(e.cmd==='clearStoreData'){
+          ElMessage({
+            message: 'Data was deleted',
+            type: 'success',
+          })
+        }
+        this.loadData();
       }
-    });
+    )
   },
   methods: {
+    loadData(){
+      // 发送消息给后台脚本
+      chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response) => {
+        // 处理返回的数据
+        console.log("收到返回");
+        console.log(response.data);
+        this.tabsData = response.data;
+        this.loadingData = false
+        this.isLoadedData = true
+        if (!response.data) {
+          //展示无数据
+          this.isLoadedData = false
+        }
+      });
+    },
     log(evt) {
       window.console.log(evt);
     },

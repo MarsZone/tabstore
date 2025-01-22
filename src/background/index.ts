@@ -220,9 +220,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
     });
   }
   if(message.type === 'clearStoreData'){
-    // chrome.storage.local.clear().then(() => {
-    //   console.log('All data cleared');
-    // });
+    chrome.storage.local.clear().then(() => {
+      console.log('All data cleared');
+    });
     chrome.tabs.query({ lastFocusedWindow: true, active: true }, (tabs) => {
       console.log(tabs[0]);
     });
