@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import { onMounted, ref } from 'vue'
-
+import { ElMessage } from 'element-plus'
 import { useAppStore } from '@/stores/app.store'
 
 // const toast = useToast();
@@ -76,6 +76,10 @@ const saveCurrentTab = async (formEl: FormInstance | undefined) => {
     if (valid) {
       // console.log('submit!')
       chrome.runtime.sendMessage({ type: 'saveCurrentTab', formData: ruleForm }, {}, (response: any) => {});
+      ElMessage({
+        message: 'Current tab saved successfully',
+        type: 'success',
+      })
     } else {
       console.log('error submit!', fields)
     }
@@ -117,6 +121,10 @@ const saveTabs = async (formEl: FormInstance | undefined) => {
               }
             }
           }
+          ElMessage({
+            message: 'Current window tabs saved successfully',
+            type: 'success',
+          })
         });
       });
     } else {

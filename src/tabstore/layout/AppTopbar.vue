@@ -1,12 +1,15 @@
 <script setup>
 import { useLayout } from '@tabstore/layout/composables/layout';
 import { useConfirm } from "primevue/useconfirm";
+import { ElLoading,ElMessage } from 'element-plus'
 import { saveAs } from 'file-saver';
 import emitter from '../mitt';
 import AppConfigurator from './AppConfigurator.vue';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 const confirm = useConfirm();
+const dialogVisible=ref(false)
+const cloudData = ref([]);
 
 function handleTrashClick(){
   confirm.require({
@@ -31,6 +34,84 @@ function handleTrashClick(){
             // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         }
     });
+}
+
+const loadDataFromCloud = async () => {
+      try {
+        chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (response) => {
+          let userid = response.data.id;
+          // 调用服务器数据
+          const sendResponse = await fetch(`http://119.28.129.221:8088/?user_id=${userid}`);
+          const data = await sendResponse.json();
+          cloudData.value = data;
+        });
+        dialogVisible.value = true;
+      } catch (error) {
+        console.error('Error loading data from cloud:', error);
+    }
+};
+
+const uploadDataToCloud = async () => {
+      try {
+        const loadingInstance = ElLoading.service({ fullscreen: true })
+        chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, async (response) => {
+          // let data = JSON.stringify(response.data);
+          let dateTime =new Date().toISOString().replace(/[-:TZ]/g, '').slice(0, 14);
+          let exportDataName = `data_${dateTime}.json`;
+          chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (response) => {
+            let userid = response.data.id;
+            console.log(userid);
+            const dto = {
+              "interface":"addData",
+              "user_id": userid,
+              "store_data": response.data,
+              "store_name": exportDataName
+            };
+            const url = 'http://119.28.129.221:8088?interface=addData';
+            const serverResponse = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(dto),
+            });
+            loadingInstance.close();
+            if (!serverResponse.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            // const responseData = await serverResponse.json();
+            // console.log('Response:', responseData);
+            emitter.emit('topbar', { cmd: 'uploadDone' })
+          });
+          
+         
+        });
+      } catch (error) {
+        console.error('Error loading data from cloud:', error);
+    }
+};
+
+
+const download = async(item) => {
+  console.log(item.id)
+  const loadingInstance = ElLoading.service({ fullscreen: true })
+  //通过id去读配置
+  const response = await fetch(`http://119.28.129.221:8088/?id=${item.id}`);
+  const data = await response.json();
+  // console.log(data)
+  setTimeout(() => {
+    chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData:data }, {}, (response) => {
+      console.log("已更新");
+    });
+    emitter.emit('topbar', { cmd: 'loadData' })
+    loadingInstance.close();
+    dialogVisible.value = false;
+    ElMessage({
+      message: 'Data was synchronized successfully',
+      type: 'success',
+    })
+  }, 400);
+  
 }
 
 function exportData(){
@@ -80,6 +161,21 @@ const fileLoad = () => {
 <template>
   <div class="layout-topbar">
     <ConfirmDialog />
+    <Dialog v-model:visible="dialogVisible" @hide="dialogVisible = false">
+      <DataTable :value="cloudData" :paginator="true" :rows="10">
+        <Column field="id" header="id" />
+        <Column field="store_name" header="store_name" />
+        <Column field="create_date" header="create_date" />
+        <!-- 添加更多列 -->
+        <Column header="操作">
+          <template #body="slotProps">
+            <button label="Download" @click="download(slotProps.data)">
+              <i class="pi pi-download" />
+            </button>
+          </template>
+        </Column>
+      </DataTable>
+    </Dialog>
     <div class="layout-topbar-logo-container">
       <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
         <i class="pi pi-bars" />
@@ -144,6 +240,23 @@ const fileLoad = () => {
       >
       <div class="layout-topbar-menu hidden lg:block">
         <div class="layout-topbar-menu-content">
+          <!-- 服务器数据交互 -->
+          <button
+            v-tooltip.left="'loadDataFromCloud'" type="button" 
+            class="layout-topbar-action"
+            @click="loadDataFromCloud"
+          >
+            <i class="pi pi-cloud-download" />
+            <span>LoadDataFromCloud</span>
+          </button>
+          <button
+            v-tooltip.left="'uploadDataToCloud'" type="button" 
+            class="layout-topbar-action"
+            @click="uploadDataToCloud"
+          >
+            <i class="pi pi-cloud-upload" />
+            <span>uploadDataToCloud</span>
+          </button>
           <!-- 导入导出Json -->
           <button
             v-tooltip.left="'Exprot'" type="button" 

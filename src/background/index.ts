@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(async (opt) => {
     })
   }
 })
-function genUrlList(tabs){
+function genUrlList(tabs: any){
   let urlList = [];
   for (let tab of tabs) {
     let tmp = {
@@ -32,7 +32,7 @@ function genUrlList(tabs){
   return urlList
 }
 
-function saveNewCategory(cid,windowId,formData,tabs) {
+function saveNewCategory(cid: number,windowId: number,formData: { catoregoryValue: any; topicValue: any; },tabs: chrome.tabs.Tab[]) {
   cid=1
   let tabsData = []
   let catoregoryValue = formData.catoregoryValue
@@ -68,7 +68,7 @@ function saveNewCategory(cid,windowId,formData,tabs) {
     saveTabs(tabsData,category,tabs)
   });
 }
-function saveTabs(tabsData,category,tabs){
+function saveTabs(tabsData: any[],category: { cid?: any; categoryTitle?: any; list: any; },tabs: any){
   let urlList = genUrlList(tabs)
   category.list[0].treeData[0].children = urlList;
   tabsData.push(category)
@@ -78,7 +78,7 @@ function saveTabs(tabsData,category,tabs){
   });
 }
 
-function saveTopics(cid,topicId,windowId,formData,tabs){
+function saveTopics(cid: any,topicId: number,windowId: number,formData: { topicValue: any; },tabs: chrome.tabs.Tab[]){
   chrome.storage.local.get("tabsData", (items) => {
     if(items.tabsData){
       let urlList = genUrlList(tabs)
@@ -122,8 +122,8 @@ function saveTopics(cid,topicId,windowId,formData,tabs){
   })
 }
 
-let activeTabId;
-let activeTab;
+let activeTabId: number;
+let activeTab: chrome.tabs.Tab;
 chrome.tabs.onActivated.addListener((activeInfo) => {
   activeTabId = activeInfo.tabId;
   // console.log(activeTabId);
@@ -183,12 +183,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
     chrome.storage.local.get("tabsData", (items) => {
       if (items.tabsData) {
         let tabsData = items.tabsData;
-        let category = tabsData.find(item => item.cid === cid);
+        let category = tabsData.find((item: { cid: any; }) => item.cid === cid);
         if (category) {
           if (topicId !== 0) {
-            let topic = category.list.find(topic => topic.topicId === topicId);
+            let topic = category.list.find((topic: { topicId: any; }) => topic.topicId === topicId);
             if (topic) {
-              const tabExists = topic.treeData[0].children.some(child => child.tabId === newTab.tabId);
+              const tabExists = topic.treeData[0].children.some((child: { tabId: any; }) => child.tabId === newTab.tabId);
               if (!tabExists) {
                 topic.treeData[0].children.push(newTab);
               }
@@ -227,13 +227,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse:any) => {
       console.log(tabs[0]);
     });
   }
+  if(message.type === 'getUserId'){
+    chrome.identity.getProfileUserInfo((userInfo: any) => {
+      console.log(userInfo)
+      sendResponse({ success: true, data:userInfo });
+    });
+    return true;
+  }
   sendResponse({ success: true });
 });
 
 
 console.log('hello world from background')
 
-globalThis.onerror = function (message, source, lineno, colno, error) {
+globalThis.onerror = function (message: any, source: any, lineno: any, colno: any, error: any) {
   console.info(
     `Error: ${message}\nSource: ${source}\nLine: ${lineno}\nColumn: ${colno}\nError object: ${error}`
   )

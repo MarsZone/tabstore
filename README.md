@@ -60,10 +60,10 @@ category-项目开发
 - category 重命名             done
 - 录入输入框bug修复           还是tailand样式问题 done
 - import后刷新tab管理页面，并且提示一下。 done
-- category 顺序调整           
-- save后反馈，刷新tab管理页面。
-- 云端同步功能，利用服务器，写个简单接口，存储查询。chrome标识+tab数据。两个按钮，一个覆盖到云端，一个从云端获取覆盖。
-- 如果访问外网同步可用，加个顶部通知功能。
+- category 顺序调整           done
+- save后反馈，刷新tab管理页面。 done
+- 云端同步功能，利用服务器，写个简单接口，存储查询。chrome标识+tab数据。两个按钮，一个覆盖到云端，一个从云端获取覆盖。done
+- 加个顶部通知功能。 done
 - category 删除
 - category 收起展开，配置及功能，默认收起。
 - 便利贴，小共享笔记

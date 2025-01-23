@@ -1,6 +1,6 @@
 <script>
 import draggable from "vuedraggable";
-import { ElMessage } from 'element-plus'
+import { ElLoading,ElMessage } from 'element-plus'
 import emitter from '../mitt';
 import RenameDialog from './components/RenameDialog.vue';
 
@@ -23,6 +23,7 @@ export default {
       isLoadedData: false,
       loadingData: true,
       selectType:"",
+      notice:"",
       selectCategory:{},
       topicSelect:{},
       tabSelect:{},
@@ -31,8 +32,20 @@ export default {
   },
   mounted() {
     this.loadData();
+    fetch('http://119.28.129.221:8088/?api=getvalue&key=notice')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        // 在这里处理返回的数据
+        this.notice = data.value
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // 在这里处理错误
+      });
+
+    
     emitter.on('topbar', e => {
-        console.log(`afdafd${e}`)
         if(e.cmd==='loadData'){
           ElMessage({
             message: 'Data load successed',
@@ -45,9 +58,30 @@ export default {
             type: 'success',
           })
         }
+        if(e.cmd==='uploadDone'){
+          ElMessage({
+            message: 'Data was uploaded',
+            type: 'success',
+          })
+          return
+        }
         this.loadData();
       }
     )
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      console.log("index Receive:")
+      if (message.type === 'saveCurrentTab' || message.type === 'saveTabs') {
+        ElMessage({
+          message: 'Data saved successed',
+          type: 'success',
+        })
+        const loadingInstance = ElLoading.service({ fullscreen: true })
+        setTimeout(() => {
+          this.loadData();
+          loadingInstance.close()
+        }, 500);
+      }
+    });
   },
   methods: {
     loadData(){
@@ -176,6 +210,11 @@ export default {
 <template>
   <div v-loading="loadingData">
     <!-- <h1>Hello, Vue!</h1> -->
+    <Panel header="Notice" class="fixed bottom-5 left-5 notice w-300 h-200">
+      <p class="m-0">
+        {{ notice }}
+      </p>
+    </Panel>
     <div v-if="!isLoadedData" class="no-data-tips flex items-center justify-center h-screen">
       <div class="text-center text-xl">
         Please Save Your Tabs First
@@ -325,5 +364,10 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   padding-right: 8px;
+}
+.notice{
+  z-index: 9999;
+  width: 300px;
+  height: 100px;
 }
 </style>

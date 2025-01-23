@@ -42,7 +42,7 @@ export default {
   // },
   offline_enabled: true,
   // host_permissions: [],
-  permissions: ['storage', 'tabs', 'background','unlimitedStorage'],
+  permissions: ['storage', 'tabs', 'background','unlimitedStorage' ,'identity',"identity.email"],
   web_accessible_resources: [
     {
       matches: ['*://*/*'],
