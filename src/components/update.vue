@@ -24,12 +24,12 @@ const version = __VERSION__
       </h1>
     </div>
 
-    <p>Icons</p>
+    <!-- <p>Icons</p>
     <div>
       <i-fa-solid-dice-five />
       <i-heroicons-outline:menu-alt-2 />
       <i-heroicons-outline-menu-alt-2 />
-    </div>
+    </div> -->
 
     <Changelog />
   </div>

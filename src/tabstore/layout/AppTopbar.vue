@@ -58,8 +58,8 @@ const uploadDataToCloud = async () => {
           // let data = JSON.stringify(response.data);
           let dateTime =new Date().toISOString().replace(/[-:TZ]/g, '').slice(0, 14);
           let exportDataName = `data_${dateTime}.json`;
-          chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (response) => {
-            let userid = response.data.id;
+          chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
+            let userid = userResponse.data.id;
             console.log(userid);
             const dto = {
               "interface":"addData",

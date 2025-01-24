@@ -16,6 +16,7 @@ const version = __VERSION__
     </p>
     <p>Version: {{ version }}</p>
   </div>
+  <Changelog />
 </template>
 
 <style lang="scss" scoped></style>
