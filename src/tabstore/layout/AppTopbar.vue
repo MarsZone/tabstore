@@ -60,10 +60,12 @@ const uploadDataToCloud = async () => {
           let exportDataName = `data_${dateTime}.json`;
           chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
             let userid = userResponse.data.id;
+            let email = userResponse.data.email;
             console.log(userid);
             const dto = {
               "interface":"addData",
               "user_id": userid,
+              "email": email,
               "store_data": response.data,
               "store_name": exportDataName
             };
