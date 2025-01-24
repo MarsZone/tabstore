@@ -209,29 +209,43 @@ function onTopicChange(value: any) {
       class="demo-ruleForm" :size="formSize" status-icon
     >
       <el-form-item label="Catoregory" prop="catoregoryValue">
-        <el-select
-          v-model="ruleForm.catoregoryValue" filterable allow-create default-first-option
-          placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
-          @change="onCatoregoryChange"
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="Press Enter to create a new category"
+          placement="top-start"
         >
-          <el-option
-            v-for="item in catoregoryOptions" :key="item.value" :label="item.label" :value="item.value"
-            @click="onCaOptionClick(item)"
-          />
-        </el-select>
+          <el-select
+            v-model="ruleForm.catoregoryValue" filterable allow-create default-first-option
+            placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
+            @change="onCatoregoryChange"
+          >
+            <el-option
+              v-for="item in catoregoryOptions" :key="item.value" :label="item.label" :value="item.value"
+              @click="onCaOptionClick(item)"
+            />
+          </el-select>
+        </el-tooltip>
       </el-form-item>
 
       <el-form-item label="Topic" prop="topicValue">
-        <el-select
-          v-model="ruleForm.topicValue" filterable allow-create default-first-option
-          placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
-          @change="onTopicChange"
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          content="Press Enter to create a new topic"
+          placement="top-start"
         >
-          <el-option
-            v-for="item in topicOptions" :key="item.value" :label="item.label" :value="item.value"
-            @click="onTopicOptionClick(item)"
-          />
-        </el-select>
+          <el-select
+            v-model="ruleForm.topicValue" filterable allow-create default-first-option
+            placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
+            @change="onTopicChange"
+          >
+            <el-option
+              v-for="item in topicOptions" :key="item.value" :label="item.label" :value="item.value"
+              @click="onTopicOptionClick(item)"
+            />
+          </el-select>
+        </el-tooltip>
       </el-form-item>
     </el-form>
     <el-row>
