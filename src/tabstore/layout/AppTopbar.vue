@@ -3,13 +3,17 @@ import { useLayout } from '@tabstore/layout/composables/layout';
 import { useConfirm } from "primevue/useconfirm";
 import { ElLoading,ElMessage } from 'element-plus'
 import { saveAs } from 'file-saver';
+import Editor from 'primevue/editor';
 import emitter from '../mitt';
 import AppConfigurator from './AppConfigurator.vue';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 const confirm = useConfirm();
 const dialogVisible=ref(false)
+const noteVisible=ref(false)
 const cloudData = ref([]);
+const contents = ref("");
+const title = ref("");
 
 function handleTrashClick(){
   confirm.require({
@@ -133,6 +137,7 @@ const refFile = ref(null);
 function importData(){
   refFile.value.click();
 }
+
 const fileLoad = () => {
     const selectedFile = refFile.value.files[0];
     const reader = new FileReader();
@@ -158,6 +163,68 @@ const fileLoad = () => {
     reader.readAsText(selectedFile);
   };
 
+const showNote = () =>{
+  title.value = '';
+  contents.value = '';
+  chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
+      let userid = userResponse.data.id;
+      let email = userResponse.data.email;
+      // console.log(userid);
+      const dto = {
+        "user_id": userid,
+      };
+      const url = 'http://119.28.129.221:8088?api=getLastNote';
+      const serverResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dto),
+      });
+      if (!serverResponse.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseData = await serverResponse.json();
+      console.log('Response:', responseData);
+      //如果responseData不为空获取array的第一个数据，如果为空就略过
+      if(responseData.length > 0){
+        title.value = responseData[0].title;
+        contents.value = responseData[0].content;
+      }
+      noteVisible.value = true;
+    });
+}
+
+const saveNote = () =>{
+  chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
+      let userid = userResponse.data.id;
+      const dto = {
+        "user_id": userid,
+        "title":title.value,
+        "content":contents.value,
+      };
+      const url = 'http://119.28.129.221:8088?api=saveNote';
+      const serverResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dto),
+      });
+      if (!serverResponse.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseData = await serverResponse.json();
+      console.log('Response:', responseData);
+      if(responseData!=null){
+        ElMessage({
+          message: 'Note was saved successfully',
+          type: 'success',
+        })
+      }
+  })
+}
+
 </script>
 
 <template>
@@ -178,6 +245,22 @@ const fileLoad = () => {
         </Column>
       </DataTable>
     </Dialog>
+
+    <Dialog v-model:visible="noteVisible" modal header="Edit Profile" :style="{ width: '45rem' }">
+      <!-- <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span> -->
+      <div class="flex items-center gap-4 mb-4">
+        <label for="title" class="font-semibold w-12">Title</label>
+        <InputText id="title" v-model="title" class="flex-auto" autocomplete="off" />
+      </div>
+      <div class="flex items-center gap-4 mb-4">
+        <Editor v-model="contents" editor-style="height: 320px" />
+      </div>
+      <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancel" severity="secondary" @click="noteVisible = false" />
+        <Button type="button" label="Save" @click="saveNote" />
+      </div>
+    </Dialog>
+
     <div class="layout-topbar-logo-container">
       <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
         <i class="pi pi-bars" />
@@ -243,6 +326,15 @@ const fileLoad = () => {
       <div class="layout-topbar-menu hidden lg:block">
         <div class="layout-topbar-menu-content">
           <!-- 服务器数据交互 -->
+          <button
+            v-tooltip.left="'shownote'" type="button" 
+            class="layout-topbar-action"
+            @click="showNote"
+          >
+            <i class="pi pi-clipboard" />
+            <span>showNote</span>
+          </button>
+
           <button
             v-tooltip.left="'loadDataFromCloud'" type="button" 
             class="layout-topbar-action"

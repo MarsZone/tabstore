@@ -366,7 +366,7 @@ export default {
   padding-right: 8px;
 }
 .notice{
-  z-index: 9999;
+  z-index: 1000;
   width: 300px;
   height: 100px;
 }
