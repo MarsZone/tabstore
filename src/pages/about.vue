@@ -4,9 +4,7 @@
   <div class="m-4">
     <h1>Extension About Page</h1>
 
-    <Button @click="$router.back">
-      Go Back
-    </button>
+    <Button @click="$router.back">Go Back</Button>
 
     <Changelog />
   </div>

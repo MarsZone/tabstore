@@ -1,14 +1,10 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="text-center m-4">
-    <h1 class="text-3xl font-bold underline pb-6">
-      Options
-    </h1>
+  <div class="m-4 text-center">
+    <h1 class="pb-6 text-3xl font-bold underline">Options</h1>
 
-    <RouterLink to="/common/about">
-      About
-    </RouterLink>
+    <RouterLink to="/common/about">About</RouterLink>
   </div>
 </template>
 
