@@ -47,19 +47,19 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
 })
 
-let tabsData = [];
+let tabsData = []
 onMounted(() => {
   loadOptions()
 })
 function loadOptions() {
   chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response: any) => {
     // 处理返回的数据
-    console.log("点击返回");
-    console.log(response.data);
+    console.log('点击返回')
+    console.log(response.data)
     // catoregoryOptions = ref([])
     catoregoryOptions.value = []
     // 将数据存储在Vue组件的状态中
-    tabsData = response.data;
+    tabsData = response.data
     if (tabsData) {
       for (let item of tabsData) {
         catoregoryOptions.value.push({
@@ -68,14 +68,18 @@ function loadOptions() {
         })
       }
     }
-  });
+  })
 }
 const saveCurrentTab = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       // console.log('submit!')
-      chrome.runtime.sendMessage({ type: 'saveCurrentTab', formData: ruleForm }, {}, (response: any) => {});
+      chrome.runtime.sendMessage(
+        { type: 'saveCurrentTab', formData: ruleForm },
+        {},
+        (response: any) => {}
+      )
       ElMessage({
         message: 'Current tab saved successfully',
         type: 'success',
@@ -91,42 +95,50 @@ const saveTabs = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       // console.log('submit!')
-      chrome.runtime.sendMessage({ type: 'saveTabs', formData: ruleForm }, {}, (response: any) => {
-        chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response: any) => {
-          console.log("收到返回");
-          console.log(response.data);
-          console.log(`Rule${ruleForm.catoregoryValue}`)
-          console.log(`Rule${ruleForm.topicValue}`)
-          catoregoryOptions.value = []
-          for (let cate of response.data) {
-            catoregoryOptions.value.push({
-              value: cate.cid,
-              label: cate.categoryTitle,
-            })
-            if (cate.categoryTitle === ruleForm.catoregoryValue) {
-              if (ruleForm.catoregoryId === 0) {
-                ruleForm.catoregoryId = cate.cid
-              }
-              topicOptions.value = []
-              for (let topic of cate.list) {
-                topicOptions.value.push({
-                  value: topic.topicId,
-                  label: topic.topic,
+      chrome.runtime.sendMessage(
+        { type: 'saveTabs', formData: ruleForm },
+        {},
+        (response: any) => {
+          chrome.runtime.sendMessage(
+            { type: 'getTabsData' },
+            {},
+            (response: any) => {
+              console.log('收到返回')
+              console.log(response.data)
+              console.log(`Rule${ruleForm.catoregoryValue}`)
+              console.log(`Rule${ruleForm.topicValue}`)
+              catoregoryOptions.value = []
+              for (let cate of response.data) {
+                catoregoryOptions.value.push({
+                  value: cate.cid,
+                  label: cate.categoryTitle,
                 })
-                if (topic.topic === ruleForm.topicValue) {
-                  if (ruleForm.topicId === 0) {
-                    ruleForm.topicId = topic.topicId
+                if (cate.categoryTitle === ruleForm.catoregoryValue) {
+                  if (ruleForm.catoregoryId === 0) {
+                    ruleForm.catoregoryId = cate.cid
+                  }
+                  topicOptions.value = []
+                  for (let topic of cate.list) {
+                    topicOptions.value.push({
+                      value: topic.topicId,
+                      label: topic.topic,
+                    })
+                    if (topic.topic === ruleForm.topicValue) {
+                      if (ruleForm.topicId === 0) {
+                        ruleForm.topicId = topic.topicId
+                      }
+                    }
                   }
                 }
               }
+              ElMessage({
+                message: 'Current window tabs saved successfully',
+                type: 'success',
+              })
             }
-          }
-          ElMessage({
-            message: 'Current window tabs saved successfully',
-            type: 'success',
-          })
-        });
-      });
+          )
+        }
+      )
     } else {
       console.log('error submit!', fields)
     }
@@ -134,17 +146,17 @@ const saveTabs = async (formEl: FormInstance | undefined) => {
 }
 
 function getStoreData() {
-  chrome.runtime.sendMessage({ type: 'getStoreData' });
+  chrome.runtime.sendMessage({ type: 'getStoreData' })
 }
 
 function clearStoreData() {
-  chrome.runtime.sendMessage({ type: 'clearStoreData' });
+  chrome.runtime.sendMessage({ type: 'clearStoreData' })
 }
 async function getCurrentTab() {
-  let queryOptions = { active: true, lastFocusedWindow: true };
-  let [tab] = await chrome.tabs.query(queryOptions);
-  console.log(tab);
-  return tab;
+  let queryOptions = { active: true, lastFocusedWindow: true }
+  let [tab] = await chrome.tabs.query(queryOptions)
+  console.log(tab)
+  return tab
 }
 // function show() {
 //   console.log('show')
@@ -152,7 +164,7 @@ async function getCurrentTab() {
 // };
 
 function openInNewWindow(this: any) {
-  window.open('/src/tabstore/index.html', '_blank');
+  window.open('/src/tabstore/index.html', '_blank')
 }
 
 function onCatoregoryChange(value: any) {
@@ -170,7 +182,6 @@ function onCatoregoryChange(value: any) {
       }
     }
   }
-
 }
 
 function onCaOptionClick(item) {
@@ -193,22 +204,27 @@ function onTopicChange(value: any) {
     }
   }
 }
-
-
 </script>
 
 <template>
-  <div class=" m-4 flex flex-col gap-y-2">
+  <div class="flex-col m-4 gap-y-2 flex">
     <!-- <Toast /> -->
-    <h1 class="text-3xl font-bold  pb-6">
-      Fast to manage your tabs.
-    </h1>
+    <h1 class="pb-6 text-3xl font-bold">Fast to manage your tabs.</h1>
 
     <el-form
-      ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto"
-      class="demo-ruleForm" :size="formSize" status-icon
+      ref="ruleFormRef"
+      style="max-width: 600px"
+      :model="ruleForm"
+      :rules="rules"
+      label-width="auto"
+      class="demo-ruleForm"
+      :size="formSize"
+      status-icon
     >
-      <el-form-item label="Catoregory" prop="catoregoryValue">
+      <el-form-item
+        label="Catoregory"
+        prop="catoregoryValue"
+      >
         <el-tooltip
           class="box-item"
           effect="dark"
@@ -216,19 +232,30 @@ function onTopicChange(value: any) {
           placement="top-start"
         >
           <el-select
-            v-model="ruleForm.catoregoryValue" filterable allow-create default-first-option
-            placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
+            v-model="ruleForm.catoregoryValue"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="Select a category or just add a new one"
+            style="width: 100%"
+            class="mx-auto"
             @change="onCatoregoryChange"
           >
             <el-option
-              v-for="item in catoregoryOptions" :key="item.value" :label="item.label" :value="item.value"
+              v-for="item in catoregoryOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
               @click="onCaOptionClick(item)"
             />
           </el-select>
         </el-tooltip>
       </el-form-item>
 
-      <el-form-item label="Topic" prop="topicValue">
+      <el-form-item
+        label="Topic"
+        prop="topicValue"
+      >
         <el-tooltip
           class="box-item"
           effect="dark"
@@ -236,12 +263,20 @@ function onTopicChange(value: any) {
           placement="top-start"
         >
           <el-select
-            v-model="ruleForm.topicValue" filterable allow-create default-first-option
-            placeholder="Select a category or just add a new one" style="width: 100%" class="mx-auto "
+            v-model="ruleForm.topicValue"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="Select a category or just add a new one"
+            style="width: 100%"
+            class="mx-auto"
             @change="onTopicChange"
           >
             <el-option
-              v-for="item in topicOptions" :key="item.value" :label="item.label" :value="item.value"
+              v-for="item in topicOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
               @click="onTopicOptionClick(item)"
             />
           </el-select>
@@ -249,35 +284,52 @@ function onTopicChange(value: any) {
       </el-form-item>
     </el-form>
     <el-row>
-      <el-button class="w-full" @click="saveTabs(ruleFormRef)">
+      <el-button
+        class="w-full"
+        @click="saveTabs(ruleFormRef)"
+      >
         SaveTabs
       </el-button>
     </el-row>
     <el-row>
-      <el-button class="w-full" @click="saveCurrentTab(ruleFormRef)">
+      <el-button
+        class="w-full"
+        @click="saveCurrentTab(ruleFormRef)"
+      >
         SaveCurrentTab
       </el-button>
     </el-row>
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-button class="w-full" @click="getStoreData">
+        <el-button
+          class="w-full"
+          @click="getStoreData"
+        >
           GetStoreData
         </el-button>
       </el-col>
       <el-col :span="12">
-        <el-button class="w-full" @click="clearStoreData">
+        <el-button
+          class="w-full"
+          @click="clearStoreData"
+        >
           ClearStoreData
         </el-button>
       </el-col>
     </el-row>
     <el-row>
-      <el-button class="w-full" @click="openInNewWindow">
+      <el-button
+        class="w-full"
+        @click="openInNewWindow"
+      >
         ShowTabStore
       </el-button>
     </el-row>
 
-
-    <RouterLink class="underline mx-auto" to="/common/about">
+    <RouterLink
+      class="mx-auto underline"
+      to="/common/about"
+    >
       About
     </RouterLink>
   </div>
@@ -299,7 +351,7 @@ function onTopicChange(value: any) {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
 
-.el-button+.el-button {
+.el-button + .el-button {
   margin-left: 0px;
 }
 </style>

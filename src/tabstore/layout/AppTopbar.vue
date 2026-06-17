@@ -1,244 +1,292 @@
 <script setup>
-import { useLayout } from '@tabstore/layout/composables/layout';
-import { useConfirm } from "primevue/useconfirm";
-import { ElLoading,ElMessage } from 'element-plus'
-import { saveAs } from 'file-saver';
-import Editor from 'primevue/editor';
-import emitter from '../mitt';
-import AppConfigurator from './AppConfigurator.vue';
+import { useLayout } from '@tabstore/layout/composables/layout'
+import { useConfirm } from 'primevue/useconfirm'
+import { ElLoading, ElMessage } from 'element-plus'
+import { saveAs } from 'file-saver'
+import Editor from 'primevue/editor'
+import emitter from '../mitt'
+import AppConfigurator from './AppConfigurator.vue'
 
-const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
-const confirm = useConfirm();
-const dialogVisible=ref(false)
-const noteVisible=ref(false)
-const cloudData = ref([]);
-const contents = ref("");
-const title = ref("");
+const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout()
+const confirm = useConfirm()
+const dialogVisible = ref(false)
+const noteVisible = ref(false)
+const cloudData = ref([])
+const contents = ref('')
+const title = ref('')
 
-function handleTrashClick(){
+function handleTrashClick() {
   confirm.require({
-        message: 'Are you sure you want to clear all data?',
-        header: 'Confirmation',
-        icon: 'pi pi-exclamation-triangle',
-        rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Yes'
-        },
-        accept: () => {
-            // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
-            // console.log("clear")
-            chrome.runtime.sendMessage({ type: 'clearStoreData' });
-            emitter.emit('topbar', { cmd: 'clearStoreData' })
-        },
-        reject: () => {
-            // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-        }
-    });
+    message: 'Are you sure you want to clear all data?',
+    header: 'Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true,
+    },
+    acceptProps: {
+      label: 'Yes',
+    },
+    accept: () => {
+      // toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+      // console.log("clear")
+      chrome.runtime.sendMessage({ type: 'clearStoreData' })
+      emitter.emit('topbar', { cmd: 'clearStoreData' })
+    },
+    reject: () => {
+      // toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+    },
+  })
 }
 
 const loadDataFromCloud = async () => {
-      try {
-        chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (response) => {
-          let userid = response.data.id;
-          // 调用服务器数据
-          const sendResponse = await fetch(`http://119.28.129.221:8088/?user_id=${userid}`);
-          const data = await sendResponse.json();
-          cloudData.value = data;
-        });
-        dialogVisible.value = true;
-      } catch (error) {
-        console.error('Error loading data from cloud:', error);
-    }
-};
+  try {
+    chrome.runtime.sendMessage({ type: 'getUserId' }, {}, async (response) => {
+      let userid = response.data.id
+      // 调用服务器数据
+      const sendResponse = await fetch(
+        `http://119.28.129.221:8088/?user_id=${userid}`
+      )
+      const data = await sendResponse.json()
+      cloudData.value = data
+    })
+    dialogVisible.value = true
+  } catch (error) {
+    console.error('Error loading data from cloud:', error)
+  }
+}
 
 const uploadDataToCloud = async () => {
-      try {
-        const loadingInstance = ElLoading.service({ fullscreen: true })
-        chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, async (response) => {
-          // let data = JSON.stringify(response.data);
-          let dateTime =new Date().toISOString().replace(/[-:TZ]/g, '').slice(0, 14);
-          let exportDataName = `data_${dateTime}.json`;
-          chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
-            let userid = userResponse.data.id;
-            let email = userResponse.data.email;
-            console.log(userid);
+  try {
+    const loadingInstance = ElLoading.service({ fullscreen: true })
+    chrome.runtime.sendMessage(
+      { type: 'getTabsData' },
+      {},
+      async (response) => {
+        // let data = JSON.stringify(response.data);
+        let dateTime = new Date()
+          .toISOString()
+          .replace(/[-:TZ]/g, '')
+          .slice(0, 14)
+        let exportDataName = `data_${dateTime}.json`
+        chrome.runtime.sendMessage(
+          { type: 'getUserId' },
+          {},
+          async (userResponse) => {
+            let userid = userResponse.data.id
+            let email = userResponse.data.email
+            console.log(userid)
             const dto = {
-              "interface":"addData",
-              "user_id": userid,
-              "email": email,
-              "store_data": response.data,
-              "store_name": exportDataName
-            };
-            const url = 'http://119.28.129.221:8088?interface=addData';
+              interface: 'addData',
+              user_id: userid,
+              email: email,
+              store_data: response.data,
+              store_name: exportDataName,
+            }
+            const url = 'http://119.28.129.221:8088?interface=addData'
             const serverResponse = await fetch(url, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify(dto),
-            });
-            loadingInstance.close();
+            })
+            loadingInstance.close()
             if (!serverResponse.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status}`)
             }
             // const responseData = await serverResponse.json();
             // console.log('Response:', responseData);
             emitter.emit('topbar', { cmd: 'uploadDone' })
-          });
-          
-         
-        });
-      } catch (error) {
-        console.error('Error loading data from cloud:', error);
-    }
-};
+          }
+        )
+      }
+    )
+  } catch (error) {
+    console.error('Error loading data from cloud:', error)
+  }
+}
 
-
-const download = async(item) => {
+const download = async (item) => {
   console.log(item.id)
   const loadingInstance = ElLoading.service({ fullscreen: true })
   //通过id去读配置
-  const response = await fetch(`http://119.28.129.221:8088/?id=${item.id}`);
-  const data = await response.json();
+  const response = await fetch(`http://119.28.129.221:8088/?id=${item.id}`)
+  const data = await response.json()
   // console.log(data)
   setTimeout(() => {
-    chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData:data }, {}, (response) => {
-      console.log("已更新");
-    });
+    chrome.runtime.sendMessage(
+      { type: 'syncStoreData', tabsData: data },
+      {},
+      (response) => {
+        console.log('已更新')
+      }
+    )
     emitter.emit('topbar', { cmd: 'loadData' })
-    loadingInstance.close();
-    dialogVisible.value = false;
+    loadingInstance.close()
+    dialogVisible.value = false
     ElMessage({
       message: 'Data was synchronized successfully',
       type: 'success',
     })
-  }, 400);
-  
+  }, 400)
 }
 
-function exportData(){
-// 导出json文件;
+function exportData() {
+  // 导出json文件;
   // new Bolb()第一个参数就是我们要导出的json数据
   chrome.runtime.sendMessage({ type: 'getTabsData' }, {}, (response) => {
-    const blob = new Blob([JSON.stringify(response.data)], { type: 'text/plain;charset=utf-8' });
-    console.log('导出json', blob);
-    let dateTime =new Date().toISOString().replace(/[-:TZ]/g, '').slice(0, 14);
-    let exportDataName = `data_${dateTime}.json`;
-    saveAs(blob, exportDataName); // 后面的是json文件的默认名称
-  });
+    const blob = new Blob([JSON.stringify(response.data)], {
+      type: 'text/plain;charset=utf-8',
+    })
+    console.log('导出json', blob)
+    let dateTime = new Date()
+      .toISOString()
+      .replace(/[-:TZ]/g, '')
+      .slice(0, 14)
+    let exportDataName = `data_${dateTime}.json`
+    saveAs(blob, exportDataName) // 后面的是json文件的默认名称
+  })
 }
 
-const refFile = ref(null);
- 
-function importData(){
-  refFile.value.click();
+const refFile = ref(null)
+
+function importData() {
+  refFile.value.click()
 }
 
 const fileLoad = () => {
-    const selectedFile = refFile.value.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (!reader.result) return;
-      try {
-        const data = JSON.parse(reader.result);
-        console.log(data)
-        chrome.runtime.sendMessage({ type: 'syncStoreData', tabsData:data }, {}, (response) => {
-          console.log("已更新");
-        });
-        emitter.emit('topbar', { cmd: 'loadData' })
-        // 具体需求的逻辑 data 就是导入的数据是 对象格式
-        // treeData.value = getTreeData(data);
-        // initSourceDataAfter(treeData.value);
-      } catch (error) {
-        // message.error('导入失败，请检查文件内容！');
-        console.log('导入失败，请检查文件内容！');
-      } finally {
-        refFile.value.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
-  };
-
-const showNote = () =>{
-  title.value = '';
-  contents.value = '';
-  chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
-      let userid = userResponse.data.id;
-      let email = userResponse.data.email;
-      // console.log(userid);
-      const dto = {
-        "user_id": userid,
-      };
-      const url = 'http://119.28.129.221:8088?api=getLastNote';
-      const serverResponse = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dto),
-      });
-      if (!serverResponse.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const responseData = await serverResponse.json();
-      console.log('Response:', responseData);
-      //如果responseData不为空获取array的第一个数据，如果为空就略过
-      if(responseData.length > 0){
-        title.value = responseData[0].title;
-        contents.value = responseData[0].content;
-      }
-      noteVisible.value = true;
-    });
+  const selectedFile = refFile.value.files[0]
+  const reader = new FileReader()
+  reader.onloadend = () => {
+    if (!reader.result) return
+    try {
+      const data = JSON.parse(reader.result)
+      console.log(data)
+      chrome.runtime.sendMessage(
+        { type: 'syncStoreData', tabsData: data },
+        {},
+        (response) => {
+          console.log('已更新')
+        }
+      )
+      emitter.emit('topbar', { cmd: 'loadData' })
+      // 具体需求的逻辑 data 就是导入的数据是 对象格式
+      // treeData.value = getTreeData(data);
+      // initSourceDataAfter(treeData.value);
+    } catch (error) {
+      // message.error('导入失败，请检查文件内容！');
+      console.log('导入失败，请检查文件内容！')
+    } finally {
+      refFile.value.value = ''
+    }
+  }
+  reader.readAsText(selectedFile)
 }
 
-const saveNote = () =>{
-  chrome.runtime.sendMessage({ type: 'getUserId' }, {},async (userResponse) => {
-      let userid = userResponse.data.id;
+const showNote = () => {
+  title.value = ''
+  contents.value = ''
+  chrome.runtime.sendMessage(
+    { type: 'getUserId' },
+    {},
+    async (userResponse) => {
+      let userid = userResponse.data.id
+      let email = userResponse.data.email
+      // console.log(userid);
       const dto = {
-        "user_id": userid,
-        "title":title.value,
-        "content":contents.value,
-      };
-      const url = 'http://119.28.129.221:8088?api=saveNote';
+        user_id: userid,
+      }
+      const url = 'http://119.28.129.221:8088?api=getLastNote'
       const serverResponse = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(dto),
-      });
+      })
       if (!serverResponse.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const responseData = await serverResponse.json();
-      console.log('Response:', responseData);
-      if(responseData!=null){
+      const responseData = await serverResponse.json()
+      console.log('Response:', responseData)
+      //如果responseData不为空获取array的第一个数据，如果为空就略过
+      if (responseData.length > 0) {
+        title.value = responseData[0].title
+        contents.value = responseData[0].content
+      }
+      noteVisible.value = true
+    }
+  )
+}
+
+const saveNote = () => {
+  chrome.runtime.sendMessage(
+    { type: 'getUserId' },
+    {},
+    async (userResponse) => {
+      let userid = userResponse.data.id
+      const dto = {
+        user_id: userid,
+        title: title.value,
+        content: contents.value,
+      }
+      const url = 'http://119.28.129.221:8088?api=saveNote'
+      const serverResponse = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dto),
+      })
+      if (!serverResponse.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const responseData = await serverResponse.json()
+      console.log('Response:', responseData)
+      if (responseData != null) {
         ElMessage({
           message: 'Note was saved successfully',
           type: 'success',
         })
       }
-  })
+    }
+  )
 }
-
 </script>
 
 <template>
   <div class="layout-topbar">
     <ConfirmDialog />
-    <Dialog v-model:visible="dialogVisible" @hide="dialogVisible = false">
-      <DataTable :value="cloudData" :paginator="true" :rows="10">
-        <Column field="id" header="id" />
-        <Column field="store_name" header="store_name" />
-        <Column field="create_date" header="create_date" />
+    <Dialog
+      v-model:visible="dialogVisible"
+      @hide="dialogVisible = false"
+    >
+      <DataTable
+        :value="cloudData"
+        :paginator="true"
+        :rows="10"
+      >
+        <Column
+          field="id"
+          header="id"
+        />
+        <Column
+          field="store_name"
+          header="store_name"
+        />
+        <Column
+          field="create_date"
+          header="create_date"
+        />
         <!-- 添加更多列 -->
         <Column header="操作">
           <template #body="slotProps">
-            <button label="Download" @click="download(slotProps.data)">
+            <button
+              label="Download"
+              @click="download(slotProps.data)"
+            >
               <i class="pi pi-download" />
             </button>
           </template>
@@ -246,26 +294,59 @@ const saveNote = () =>{
       </DataTable>
     </Dialog>
 
-    <Dialog v-model:visible="noteVisible" modal header="Edit Profile" :style="{ width: '45rem' }">
+    <Dialog
+      v-model:visible="noteVisible"
+      modal
+      header="Edit Profile"
+      :style="{ width: '45rem' }"
+    >
       <!-- <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span> -->
-      <div class="flex items-center gap-4 mb-4">
-        <label for="title" class="font-semibold w-12">Title</label>
-        <InputText id="title" v-model="title" class="flex-auto" autocomplete="off" />
+      <div class="mb-4 gap-4 flex items-center">
+        <label
+          for="title"
+          class="w-12 font-semibold"
+        >
+          Title
+        </label>
+        <InputText
+          id="title"
+          v-model="title"
+          class="flex-auto"
+          autocomplete="off"
+        />
       </div>
-      <div class="flex items-center gap-4 mb-4">
-        <Editor v-model="contents" editor-style="height: 320px" />
+      <div class="mb-4 gap-4 flex items-center">
+        <Editor
+          v-model="contents"
+          editor-style="height: 320px"
+        />
       </div>
-      <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancel" severity="secondary" @click="noteVisible = false" />
-        <Button type="button" label="Save" @click="saveNote" />
+      <div class="gap-2 flex justify-end">
+        <Button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          @click="noteVisible = false"
+        />
+        <Button
+          type="button"
+          label="Save"
+          @click="saveNote"
+        />
       </div>
     </Dialog>
 
     <div class="layout-topbar-logo-container">
-      <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
+      <button
+        class="layout-menu-button layout-topbar-action"
+        @click="onMenuToggle"
+      >
         <i class="pi pi-bars" />
       </button>
-      <router-link to="/src/tabstore/" class="layout-topbar-logo">
+      <router-link
+        to="/src/tabstore/"
+        class="layout-topbar-logo"
+      >
         <!-- <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fill-rule="evenodd" clip-rule="evenodd"
@@ -289,7 +370,12 @@ const saveNote = () =>{
           </g>
         </svg> -->
 
-        <img src="@/assets/logoTop.png" alt="Logo Top" width="54" height="54">
+        <img
+          src="@/assets/logoTop.png"
+          alt="Logo Top"
+          width="54"
+          height="54"
+        />
         <span>TabStore</span>
       </router-link>
     </div>
@@ -322,12 +408,13 @@ const saveNote = () =>{
         type="file"
         style="display: none"
         @change="fileLoad"
-      >
+      />
       <div class="layout-topbar-menu hidden lg:block">
         <div class="layout-topbar-menu-content">
           <!-- 服务器数据交互 -->
           <button
-            v-tooltip.left="'shownote'" type="button" 
+            v-tooltip.left="'shownote'"
+            type="button"
             class="layout-topbar-action"
             @click="showNote"
           >
@@ -336,7 +423,8 @@ const saveNote = () =>{
           </button>
 
           <button
-            v-tooltip.left="'loadDataFromCloud'" type="button" 
+            v-tooltip.left="'loadDataFromCloud'"
+            type="button"
             class="layout-topbar-action"
             @click="loadDataFromCloud"
           >
@@ -344,7 +432,8 @@ const saveNote = () =>{
             <span>LoadDataFromCloud</span>
           </button>
           <button
-            v-tooltip.left="'uploadDataToCloud'" type="button" 
+            v-tooltip.left="'uploadDataToCloud'"
+            type="button"
             class="layout-topbar-action"
             @click="uploadDataToCloud"
           >
@@ -353,7 +442,8 @@ const saveNote = () =>{
           </button>
           <!-- 导入导出Json -->
           <button
-            v-tooltip.left="'Exprot'" type="button" 
+            v-tooltip.left="'Exprot'"
+            type="button"
             class="layout-topbar-action"
             @click="exportData"
           >
@@ -362,16 +452,18 @@ const saveNote = () =>{
           </button>
 
           <button
-            v-tooltip.left="'Import'" type="button" 
+            v-tooltip.left="'Import'"
+            type="button"
             class="layout-topbar-action"
             @click="importData"
           >
             <i class="pi pi-file-import" />
             <span>Calendar</span>
           </button>
-          
+
           <button
-            v-tooltip.left="'Clear all data'" type="button" 
+            v-tooltip.left="'Clear all data'"
+            type="button"
             class="layout-topbar-action"
             @click="handleTrashClick"
           >

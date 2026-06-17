@@ -39,8 +39,8 @@ const ComponentToRender = computed(() => {
 </script>
 
 <template>
-  <div class="p-10 flex flex-col flex-1 justify-center">
-    <div class="flex flex-col items-center">
+  <div class="flex-col flex-1 p-10 flex justify-center">
+    <div class="flex-col flex items-center">
       <component :is="ComponentToRender" />
     </div>
   </div>
